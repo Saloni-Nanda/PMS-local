@@ -46,7 +46,6 @@ const navigation = [
       { name: 'Cash', href: '/frontdesk/cash' },
       { name: 'Room Change', href: '/frontdesk/room-change' },
       { name: 'Check-in', href: '/frontdesk/check-in' },
-      { name: 'Late Check-in', href: '/frontdesk/late-check-in' },
       { name: 'Check-out', href: '/frontdesk/check-out' },
       { name: 'Account Receivable', href: '/frontdesk/account-receivable' },
     ]

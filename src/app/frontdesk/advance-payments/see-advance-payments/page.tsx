@@ -1,9 +1,24 @@
 "use client"
 import React, { useState } from 'react';
+import { ChevronDown } from 'lucide-react';
+import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 
 const Page = () => {
   const [paymentData, setPaymentData] = useState({
+    paymentNumber: '',
+    bookingNumber: '',
+    reference: '',
+    unassignedAmount: '',
+    guest: '',
+    payment: '',
+    notes: ''
   });
+
+  const [paymentMethod, setPaymentMethod] = useState('I Hope');
+  const [currency, setCurrency] = useState('USD');
+
+  const paymentMethods = ['I Hope', 'Credit Card', 'Cash', 'Bank Transfer', 'PayPal'];
+  const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
   const [roomDetails] = useState([
     {
@@ -14,180 +29,214 @@ const Page = () => {
     }
   ]);
 
-
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
-      <div className="max-w-6xl mx-auto">
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900 mb-2">Payment Info</h1>
-          <div className="h-1 w-20 bg-blue-600 rounded"></div>
-        </div>
+    <div className="flex px-6 bg-gray-50 min-h-screen">
+      <div className="bg-white p-4 sm:p-6 rounded-md w-full max-w-4xl">
+        <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Payment Info</h2>
 
-        {/* Payment Information Card */}
-        <div className="bg-white rounded-xl shadow-lg p-8 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="space-y-4">
+          {/* Payment Information Grid */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {/* Left Column */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Payment Nr.
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Payment Nr.</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.paymentNumber}
+                  onChange={(e) => setPaymentData({...paymentData, paymentNumber: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="Enter payment number"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Booking Number
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Booking Number</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.bookingNumber}
+                  onChange={(e) => setPaymentData({...paymentData, bookingNumber: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="Enter booking number"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Reference
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Reference</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.reference}
+                  onChange={(e) => setPaymentData({...paymentData, reference: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="Enter reference"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Unassigned Amount
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Unassigned Amount</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.unassignedAmount}
+                  onChange={(e) => setPaymentData({...paymentData, unassignedAmount: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="0.00"
                 />
               </div>
             </div>
 
             {/* Right Column */}
-            <div className="space-y-6">
+            <div className="space-y-4">
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Guest
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Guest</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.guest}
+                  onChange={(e) => setPaymentData({...paymentData, guest: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="Enter guest name"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Payment Method
-                </label>
-                <select
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                >
-                  <option value="I Hope">I Hope</option>
-                  <option value="Credit Card">Credit Card</option>
-                  <option value="Cash">Cash</option>
-                  <option value="Bank Transfer">Bank Transfer</option>
-                  <option value="PayPal">PayPal</option>
-                </select>
+                <label className="block text-xs text-gray-600 mb-1">Payment Method</label>
+                <div className="relative">
+                  <Listbox value={paymentMethod} onChange={setPaymentMethod}>
+                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
+                    border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
+                    hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                      {paymentMethod}
+                      <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
+                    </ListboxButton>
+                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
+                    rounded-md shadow-md z-10 text-xs sm:text-sm">
+                      {paymentMethods.map((method) => (
+                        <ListboxOption
+                          key={method}
+                          value={method}
+                          className="px-2 py-1 cursor-pointer text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
+                        >
+                          {method}
+                        </ListboxOption>
+                      ))}
+                    </ListboxOptions>
+                  </Listbox>
+                </div>
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Payment
-                </label>
+                <label className="block text-xs text-gray-600 mb-1">Payment</label>
                 <input
                   type="text"
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  value={paymentData.payment}
+                  onChange={(e) => setPaymentData({...paymentData, payment: e.target.value})}
+                  className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                  text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+                  focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                   placeholder="Enter payment amount"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-semibold text-gray-700 mb-2">
-                  Currency
-                </label>
-                <select
-                  
-                  className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                >
-                  <option value="USD">USD</option>
-                  <option value="EUR">EUR</option>
-                  <option value="GBP">GBP</option>
-                  <option value="CAD">CAD</option>
-                  <option value="AUD">AUD</option>
-                </select>
+                <label className="block text-xs text-gray-600 mb-1">Currency</label>
+                <div className="relative">
+                  <Listbox value={currency} onChange={setCurrency}>
+                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
+                    border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
+                    hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                      {currency}
+                      <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
+                    </ListboxButton>
+                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
+                    rounded-md shadow-md z-10 text-xs sm:text-sm">
+                      {currencies.map((curr) => (
+                        <ListboxOption
+                          key={curr}
+                          value={curr}
+                          className="px-2 py-1 cursor-pointer text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
+                        >
+                          {curr}
+                        </ListboxOption>
+                      ))}
+                    </ListboxOptions>
+                  </Listbox>
+                </div>
               </div>
             </div>
           </div>
 
           {/* Notes Section */}
-          <div className="mt-6">
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Notes
-            </label>
+          <div>
+            <label className="block text-xs text-gray-600 mb-1">Notes</label>
             <textarea
               rows={4}
-              className="w-full px-4 py-3 bg-gray-100 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none"
+              value={paymentData.notes}
+              onChange={(e) => setPaymentData({...paymentData, notes: e.target.value})}
+              className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+              text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
+              focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm resize-none"
               placeholder="Enter any additional notes..."
             />
           </div>
-        </div>
 
-        {/* Details Section */}
-        <div className="bg-white rounded-xl shadow-lg p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-6">Details</h2>
-          
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Room Type
-                  </th>
-                  <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Room Number
-                  </th>
-                  <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Assignment Date
-                  </th>
-                  <th className="text-left py-4 px-4 text-sm font-semibold text-gray-600 uppercase tracking-wider">
-                    Assigned Amount
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {roomDetails.map((room, index) => (
-                  <tr key={index} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                    <td className="py-4 px-4 text-gray-900 font-medium">{room.roomType}</td>
-                    <td className="py-4 px-4 text-gray-700">{room.roomNumber}</td>
-                    <td className="py-4 px-4 text-gray-700">{room.assignmentDate}</td>
-                    <td className="py-4 px-4 text-gray-900 font-semibold">${room.assignedAmount}</td>
+          {/* Details Section */}
+          <div className="pt-4">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">Details</h3>
+            
+            <div className="overflow-x-auto border border-[#076DB3] rounded-md">
+              <table className="w-full">
+                <thead className="bg-gray-50">
+                  <tr>
+                    <th className="text-left py-2 px-3 text-xs text-gray-600 font-medium">
+                      Room Type
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs text-gray-600 font-medium">
+                      Room Number
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs text-gray-600 font-medium">
+                      Assignment Date
+                    </th>
+                    <th className="text-left py-2 px-3 text-xs text-gray-600 font-medium">
+                      Assigned Amount
+                    </th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {roomDetails.map((room, index) => (
+                    <tr key={index} className="border-t border-gray-200">
+                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-900">{room.roomType}</td>
+                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-700">{room.roomNumber}</td>
+                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-700">{room.assignmentDate}</td>
+                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-900 font-medium">${room.assignedAmount}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
 
-        {/* Action Buttons */}
-        <div className="mt-8 flex flex-col sm:flex-row gap-4 justify-end">
-          <button className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium">
-            Cancel
-          </button>
-          <button className="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium shadow-lg">
-            Save Changes
-          </button>
+          {/* Action Buttons */}
+          <div className="pt-2 flex gap-2">
+            <button className="px-4 py-2 border border-gray-300 text-gray-700 text-xs sm:text-sm 
+            font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-1 
+            focus:ring-gray-300 focus:ring-offset-1 transition-colors">
+              Cancel
+            </button>
+            <button className="px-4 py-2 bg-[#076DB3] text-white text-xs sm:text-sm 
+            font-medium rounded-md hover:bg-[#054f80] focus:outline-none focus:ring-1 
+            focus:ring-[#076DB3] focus:ring-offset-1 transition-colors">
+              Save Changes
+            </button>
+          </div>
         </div>
       </div>
     </div>
