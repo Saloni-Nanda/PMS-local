@@ -22,7 +22,6 @@ import {
   Settings,
   LogOut,
   ChevronLeft,
-  Search
 } from 'lucide-react'
 
 const navigation = [
@@ -63,9 +62,7 @@ const navigation = [
     name: 'Maintainance',
     href: '/maintainance',
     icon: Wrench,
-    children: [
-     
-    ]
+    children: []
   },
   {
     name: 'Inventory',
@@ -76,15 +73,15 @@ const navigation = [
       { name: 'Check Inventory and Rates', href: '/inventory/check-inventory-rates' },
     ]
   },
-   {
+  {
     name: 'Rates',
-    href: 'rates/rate-plan',
+    href: '/rates/rate-plan',
     icon: Calendar,
     children: [
-      { name: 'Rate Plan', href: 'rates/rate-plan' },
-      { name: 'Rate Relation', href: 'rates/rate-relation' },
-      { name: 'Price Per Room', href: 'rates/price-per-room' },
-      { name: 'Prices', href: 'rates/prices' },
+      { name: 'Rate Plan', href: '/rates/rate-plan' },
+      { name: 'Rate Relation', href: '/rates/rate-relation' },
+      { name: 'Price Per Room', href: '/rates/price-per-room' },
+      { name: 'Prices', href: '/rates/prices' },
     ]
   },
 ]
@@ -99,10 +96,7 @@ export function Sidebar() {
         'flex flex-col border-r transition-all duration-300 h-screen overflow-hidden',
         collapsed ? 'w-16' : 'w-64'
       )}
-      style={{ 
-        backgroundColor: '#FEFCF8', 
-        borderColor: '#E6B847' 
-      }}
+      style={{ backgroundColor: '#FEFCF8', borderColor: '#E6B847' }}
     >
       {/* Header */}
       <div className="flex items-center justify-between p-4 border-b flex-shrink-0" style={{ borderColor: '#E6B847' }}>
@@ -124,8 +118,8 @@ export function Sidebar() {
               'h-4 w-4 transition-transform',
               collapsed && 'rotate-180'
             )}
-                      />
-          </button>
+          />
+        </button>
       </div>
 
       {/* Scrollable Navigation */}
@@ -146,21 +140,17 @@ export function Sidebar() {
                       <Button
                         variant="ghost"
                         className={cn(
-                          'w-full justify-start mb-1',
+                          'w-full justify-start mb-1 transition-all duration-200 transform hover:scale-105 hover:bg-yellow-100 rounded-md',
                           collapsed ? 'px-2' : 'px-3',
-                          isActive
-                            ? ' shadow-sm'
-                            : ''
+                          isActive ? ' shadow-sm' : ''
                         )}
-                        style={isActive 
+                        style={isActive
                           ? { backgroundColor: '#FEFBDC' }
                           : { color: '#2C3E50' }
                         }
                       >
-                        <Icon className={cn('h-4 w-4 ', !collapsed && 'mr-3')} />
-                        {!collapsed && (
-                          <span className="truncate">{item.name}</span>
-                        )}
+                        <Icon className={cn('h-4 w-4', !collapsed && 'mr-3')} />
+                        {!collapsed && <span className="truncate">{item.name}</span>}
                       </Button>
                     </Link>
 
@@ -173,20 +163,12 @@ export function Sidebar() {
                               variant="ghost"
                               size="sm"
                               className={cn(
-                                'w-full justify-start text-sm transition-colors font',
-                                pathname === child.href 
-                                  ? 'font-medium' 
-                                  : 'hover:bg-opacity-10'
+                                'w-full justify-start text-sm transition-all duration-200 transform hover:scale-105 hover:bg-yellow-100 rounded-md',
+                                pathname === child.href ? 'font-medium scale-105 shadow-inner' : ''
                               )}
-                              style={pathname === child.href 
-                                ? {  
-                                   fontWeight: 'bold',
-                                    color: '#5D2A3D' 
-                                  }
-                                : { 
-                                 
-                                    color: '#2C3E50' 
-                                  }
+                              style={pathname === child.href
+                                ? { fontWeight: 'bold', color: '#5D2A3D' }
+                                : { color: '#2C3E50' }
                               }
                             >
                               {child.name}
@@ -207,7 +189,7 @@ export function Sidebar() {
       <div className="p-3 border-t flex-shrink-0" style={{ borderColor: '#E6B847' }}>
         <button
           className={cn(
-            'w-full justify-start flex items-center p-2 rounded',
+            'w-full justify-start flex items-center p-2 rounded transition-all duration-200 transform hover:scale-105 hover:bg-yellow-100',
             collapsed ? 'px-2' : 'px-3'
           )}
           style={{ color: '#2C3E50' }}

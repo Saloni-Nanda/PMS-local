@@ -1,8 +1,6 @@
-
 'use client'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
 import { Badge } from '@/components/ui/badge'
 import {
   DropdownMenu,
@@ -13,15 +11,18 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Bell, Search, Settings, User, LogOut } from 'lucide-react'
+import { Bell, Settings, User, LogOut } from 'lucide-react'
 
 export function Header() {
   return (
     <header className="flex items-center justify-between px-6 py-4 bg-white border-b border-gray-200">
-      
+      {/* Left Side - You can add logo or nav here if needed */}
+      <div className="flex items-center space-x-4">
+        <p className="font-semibold text-gray-800">HotelStar Dashboard</p>
+      </div>
 
       {/* Right Side Actions */}
-      <div className="flex items-center space-x-4">
+      <div className="ml-auto flex items-center space-x-4">
         {/* Notifications */}
         <div className="relative">
           <Button variant="ghost" size="sm" className="relative">
@@ -75,8 +76,6 @@ export function Header() {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-
-      
     </header>
   )
 }
