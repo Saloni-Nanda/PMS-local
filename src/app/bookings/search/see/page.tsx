@@ -54,12 +54,12 @@ export default function Page() {
     agency: "",
   });
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>
+  // ) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({ ...prev, [name]: value }));
+  // };
 
   return (
     <form className="p-4 md:p-6 bg-white">
@@ -105,7 +105,7 @@ export default function Page() {
               name={name}
               type={type}
               value={formData[name as keyof BookingFormData]}
-              onChange={handleChange}
+              //onChange={handleChange}
               placeholder={placeholder}
               className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-1 focus:ring-[#076DB3] focus:border-transparent text-sm"
             />

@@ -14,12 +14,14 @@ const Page = () => {
     notes: ''
   });
 
-  const [paymentMethod, setPaymentMethod] = useState('I Hope');
-  const [currency, setCurrency] = useState('USD');
-
   const paymentMethods = ['I Hope', 'Credit Card', 'Cash', 'Bank Transfer', 'PayPal'];
   const currencies = ['USD', 'EUR', 'GBP', 'CAD', 'AUD'];
 
+
+  const [paymentMethod, setPaymentMethod] = useState(paymentMethods[0]);
+  const [currency, setCurrency] = useState(currencies[0]);
+
+  
   const [roomDetails] = useState([
     {
       roomType: 'D1',
@@ -224,19 +226,7 @@ const Page = () => {
             </div>
           </div>
 
-          {/* Action Buttons */}
-          <div className="pt-2 flex gap-2">
-            <button className="px-4 py-2 border border-gray-300 text-gray-700 text-xs sm:text-sm 
-            font-medium rounded-md hover:bg-gray-50 focus:outline-none focus:ring-1 
-            focus:ring-gray-300 focus:ring-offset-1 transition-colors">
-              Cancel
-            </button>
-            <button className="px-4 py-2 bg-[#076DB3] text-white text-xs sm:text-sm 
-            font-medium rounded-md hover:bg-[#054f80] focus:outline-none focus:ring-1 
-            focus:ring-[#076DB3] focus:ring-offset-1 transition-colors">
-              Save Changes
-            </button>
-          </div>
+         
         </div>
       </div>
     </div>

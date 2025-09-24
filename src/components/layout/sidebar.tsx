@@ -9,20 +9,13 @@ import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Home,
   Calendar,
-  Package,
-  DollarSign,
   Users,
   Bed,
   Wrench,
-  Coffee,
   CreditCard,
-  UserCircle,
-  BarChart3,
-  Building2,
-  Settings,
   LogOut,
   ChevronLeft,
-  Search
+  CalendarCheck
 } from 'lucide-react'
 
 const navigation = [
@@ -62,28 +55,26 @@ const navigation = [
     name: 'Maintainance',
     href: '/maintainance',
     icon: Wrench,
-    children: [
-     
-    ]
+    children: []
   },
   {
     name: 'Inventory',
     href: '/inventory/inventory-management',
-    icon: Calendar,
+    icon: CalendarCheck,
     children: [
       { name: 'Inventory Management', href: '/inventory/inventory-management' },
       { name: 'Check Inventory and Rates', href: '/inventory/check-inventory-rates' },
     ]
   },
-   {
+  {
     name: 'Rates',
-    href: 'rates/rate-plan',
-    icon: Calendar,
+    href: '/rates/rate-plan',
+    icon: CreditCard,
     children: [
-      { name: 'Rate Plan', href: 'rates/rate-plan' },
-      { name: 'Rate Relation', href: 'rates/rate-relation' },
-      { name: 'Price Per Room', href: 'rates/price-per-room' },
-      { name: 'Prices', href: 'rates/prices' },
+      { name: 'Rate Plan', href: '/rates/rate-plan' },
+      { name: 'Rate Relation', href: '/rates/rate-relation' },
+      { name: 'Price Per Room', href: '/rates/price-per-room' },
+      { name: 'Prices', href: '/rates/prices' },
     ]
   },
 ]
@@ -92,39 +83,41 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
 
+  const themeColor = '#076DB3' // new theme color
+
   return (
     <div
       className={cn(
         'flex flex-col border-r transition-all duration-300 h-screen overflow-hidden',
         collapsed ? 'w-16' : 'w-64'
       )}
-      style={{ 
-        backgroundColor: '#FEFCF8', 
-        borderColor: '#E6B847' 
+      style={{
+        backgroundColor: '#FFFFFF', // keep background white
+        borderColor: themeColor
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b flex-shrink-0" style={{ borderColor: '#E6B847' }}>
+      <div className="flex items-center justify-between p-4 border-b flex-shrink-0" style={{ borderColor: themeColor }}>
         {!collapsed && (
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: '#E6B847' }}>
-              <span className="font-bold text-sm" style={{ color: '#5D2A3D' }}>H</span>
+            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: themeColor }}>
+              <span className="font-bold text-sm text-white">H</span>
             </div>
-            <span className="font-semibold" style={{ color: '#5D2A3D' }}>HotelStar</span>
+            <span className="font-semibold" style={{ color: themeColor }}>HotelStar</span>
           </div>
         )}
         <button
           onClick={() => setCollapsed(!collapsed)}
           className={cn('p-1 focus:outline-none', collapsed && 'w-full')}
-          style={{ color: '#5D2A3D' }}
+          style={{ color: themeColor }}
         >
           <ChevronLeft
             className={cn(
               'h-4 w-4 transition-transform',
               collapsed && 'rotate-180'
             )}
-                      />
-          </button>
+          />
+        </button>
       </div>
 
       {/* Scrollable Navigation */}
@@ -147,19 +140,15 @@ export function Sidebar() {
                         className={cn(
                           'w-full justify-start mb-1',
                           collapsed ? 'px-2' : 'px-3',
-                          isActive
-                            ? ' shadow-sm'
-                            : ''
+                          isActive ? 'shadow-sm' : ''
                         )}
-                        style={isActive 
-                          ? { backgroundColor: '#FEFBDC' }
+                        style={isActive
+                          ? { backgroundColor: '#E6F0FA', color: themeColor }
                           : { color: '#2C3E50' }
                         }
                       >
-                        <Icon className={cn('h-4 w-4 ', !collapsed && 'mr-3')} />
-                        {!collapsed && (
-                          <span className="truncate">{item.name}</span>
-                        )}
+                        <Icon className={cn('h-4 w-4', !collapsed && 'mr-3')} />
+                        {!collapsed && <span className="truncate">{item.name}</span>}
                       </Button>
                     </Link>
 
@@ -173,19 +162,11 @@ export function Sidebar() {
                               size="sm"
                               className={cn(
                                 'w-full justify-start text-sm transition-colors font',
-                                pathname === child.href 
-                                  ? 'font-medium' 
-                                  : 'hover:bg-opacity-10'
+                                pathname === child.href ? 'font-medium' : 'hover:bg-opacity-10'
                               )}
-                              style={pathname === child.href 
-                                ? {  
-                                   fontWeight: 'bold',
-                                    color: '#5D2A3D' 
-                                  }
-                                : { 
-                                 
-                                    color: '#2C3E50' 
-                                  }
+                              style={pathname === child.href
+                                ? { fontWeight: 'bold', color: themeColor }
+                                : { color: '#2C3E50' }
                               }
                             >
                               {child.name}
@@ -203,7 +184,7 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t flex-shrink-0" style={{ borderColor: '#E6B847' }}>
+      <div className="p-3 border-t flex-shrink-0" style={{ borderColor: themeColor }}>
         <button
           className={cn(
             'w-full justify-start flex items-center p-2 rounded',

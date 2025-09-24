@@ -38,11 +38,11 @@ export default function RootLayout({
                         <div className="flex-1 flex flex-col overflow-hidden">
                             {/* Header */}
                             <Header />
-                            
-                           {/* Breadcrumb with bottom shadow */}
-<div className="bg-white shadow-sm px-6 py-2">
-  <AppBreadcrumb />
-</div>
+
+                            {/* Breadcrumb with bottom shadow */}
+                            <div className="bg-white shadow-sm px-6 py-2">
+                                <AppBreadcrumb />
+                            </div>
 
 
 

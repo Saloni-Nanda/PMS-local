@@ -68,7 +68,7 @@ const Page: React.FC = () => {
     };
 
     const handleAccept = () => {
-        alert(`Room ${selectedRoom} selected for booking ${currentBooking?.bookingNumber}`);
+        //alert(`Room ${selectedRoom} selected for booking ${currentBooking?.bookingNumber}`);
         handleCloseModal();
     };
 
