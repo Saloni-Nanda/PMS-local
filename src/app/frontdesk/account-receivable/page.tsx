@@ -28,10 +28,11 @@ const Page: React.FC = () => {
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<AccountReceivableRecord | null>(null);
 
-  const [paymentType, setPaymentType] = useState(paymentTypes[0]);
-  const [paymentCurrency, setPaymentCurrency] = useState(currencies[0]);
-  const [paymentAmount, setPaymentAmount] = useState('15.00');
-
+  const [paymentData, setPaymentData] = useState({
+    type: paymentTypes[0],
+    currency: currencies[0],
+    amount: '15.00'
+  });
   const accountsReceivableData: AccountReceivableRecord[] = [
     {
       id: 1,
@@ -316,62 +317,68 @@ const Page: React.FC = () => {
 
               <h2 className="text-lg font-semibold text-center text-gray-800">Add Payment</h2>
 
-                {/* Payment Type Listbox */}
-                <h2 className="text-sm font-normal text-gray-800">Add Payment</h2>
-                <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
-                  <Listbox value={paymentType} onChange={setPaymentType}>
-                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                      {paymentType}
-                      <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                    </ListboxButton>
-                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                      {paymentTypes.map((type) => (
-                        <ListboxOption
-                          key={type}
-                          value={type}
-                          className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                        >
-                          {type}
-                        </ListboxOption>
-                      ))}
-                    </ListboxOptions>
-                  </Listbox>
-                </div>
+              {/* Payment Type Listbox */}
+              <h2 className="text-sm font-normal text-gray-800">Add Payment</h2>
+              <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
+                <Listbox
+                  value={paymentData.type}
+                  onChange={(val) => setPaymentData({ ...paymentData, type: val })}
+                >
+                  <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                    {paymentData.type}
+                    <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
+                  </ListboxButton>
+                  <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
+                    {paymentTypes.map((type) => (
+                      <ListboxOption
+                        key={type}
+                        value={type}
+                        className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
+                      >
+                        {type}
+                      </ListboxOption>
+                    ))}
+                  </ListboxOptions>
+                </Listbox>
+              </div>
 
-                {/* Currency Listbox */}
-                <h2 className="text-sm font-normal text-gray-800">Currency</h2>
-                <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
-                  <Listbox value={paymentCurrency} onChange={setPaymentCurrency}>
-                    <Listbox.Button className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                      {paymentCurrency}
-                      <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                    </Listbox.Button>
-                    <Listbox.Options className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                      {currencies.map((currency) => (
-                        <Listbox.Option
-                          key={currency}
-                          value={currency.split(" ")[0]}
-                          className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                        >
-                          {currency}
-                        </Listbox.Option>
-                      ))}
-                    </Listbox.Options>
-                  </Listbox>
-                </div>
+              {/* Currency Listbox */}
+              <h2 className="text-sm font-normal text-gray-800">Currency</h2>
+              <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
+                <Listbox
+                  value={paymentData.currency}
+                  onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
+                >
+                  <Listbox.Button className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                    {paymentData.currency}
+                    <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
+                  </Listbox.Button>
+                  <Listbox.Options className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
+                    {currencies.map((currency) => (
+                      <Listbox.Option
+                        key={currency}
+                        value={currency.split(" ")[0]}
+                        className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
+                      >
+                        {currency}
+                      </Listbox.Option>
+                    ))}
+                  </Listbox.Options>
+                </Listbox>
+              </div>
 
-                {/* Amount Input */}
-                <h2 className="text-sm font-normal text-gray-800">Amount</h2>
-                <div className="col-span-1 sm:col-span-2">
-                  <input
-                    type="number"
-                    step="0.01"
-                    value={paymentAmount}
-                    onChange={(e) => setPaymentAmount(e.target.value)}
-                    placeholder="Amount"
-                    className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  />
-                </div>
+              {/* Amount Input */}
+              <h2 className="text-sm font-normal text-gray-800">Amount</h2>
+              <div className="col-span-1 sm:col-span-2">
+                <input
+                  type="number"
+                  step="0.01"
+                  value={paymentData.amount}
+                  onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
+                  placeholder="Amount"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                />
+              </div>
 
               <div className="flex gap-3 mt-2">
                 <button

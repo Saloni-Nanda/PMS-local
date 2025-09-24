@@ -2,6 +2,7 @@
 import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
 
 const Page = () => {
   const paymentMethods = ['I Hope', 'Credit Card', 'Cash', 'Bank Transfer', 'PayPal'];
@@ -18,14 +19,14 @@ const Page = () => {
     notes: ''
   });
 
-  const [roomDetails] = useState([
-    {
-      roomType: 'D1',
-      roomNumber: 'D1_4',
-      assignmentDate: '07/07/2020',
-      assignedAmount: '100'
-    }
-  ]);
+  const handleCloseModal = () => {
+
+  };
+
+  const router = useRouter()
+  const handleAccept = () => {
+    router.back()
+  };
 
   return (
     <div className="flex px-6 bg-gray-50 min-h-screen">
@@ -42,7 +43,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.paymentNumber}
-                  //onChange={(e) => setPaymentData({...paymentData, paymentNumber: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, paymentNumber: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -55,7 +56,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.bookingNumber}
-                  //onChange={(e) => setPaymentData({...paymentData, bookingNumber: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, bookingNumber: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -68,7 +69,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.reference}
-                  //onChange={(e) => setPaymentData({...paymentData, reference: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, reference: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -81,7 +82,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.unassignedAmount}
-                  //onChange={(e) => setPaymentData({...paymentData, unassignedAmount: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, unassignedAmount: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -97,7 +98,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.guest}
-                  //onChange={(e) => setPaymentData({...paymentData, guest: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, guest: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -109,7 +110,7 @@ const Page = () => {
                 <label className="block text-xs text-gray-600 mb-1">Payment Method</label>
                 <div className="relative">
                   <Listbox value={paymentData.paymentMethod}
-                  //onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
+                    onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
                   >
                     <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
                     border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
@@ -138,7 +139,7 @@ const Page = () => {
                 <input
                   type="text"
                   value={paymentData.payment}
-                  //onChange={(e) => setPaymentData({...paymentData, payment: e.target.value})}
+                  onChange={(e) => setPaymentData({ ...paymentData, payment: e.target.value })}
                   className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
@@ -150,7 +151,7 @@ const Page = () => {
                 <label className="block text-xs text-gray-600 mb-1">Currency</label>
                 <div className="relative">
                   <Listbox value={paymentData.currency}
-                  //onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
+                    onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
                   >
                     <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
                     border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
@@ -182,51 +183,28 @@ const Page = () => {
             <textarea
               rows={4}
               value={paymentData.notes}
-              //onChange={(e) => setPaymentData({...paymentData, notes: e.target.value})}
+              onChange={(e) => setPaymentData({ ...paymentData, notes: e.target.value })}
               className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
               text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
               focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm resize-none"
               placeholder="Enter any additional notes..."
             />
           </div>
+        </div>
 
-          {/* Details Section */}
-          <div className="pt-4">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">Details</h3>
-            
-            <div className="overflow-x-auto border border-[#076DB3] rounded-md">
-              <table className="w-full">
-                <thead className="bg-gray-50">
-                  <tr>
-                    <th className="text-center py-2 px-3 text-xs text-gray-600 font-medium">
-                      Room Type
-                    </th>
-                    <th className="text-center py-2 px-3 text-xs text-gray-600 font-medium">
-                      Room Number
-                    </th>
-                    <th className="text-center py-2 px-3 text-xs text-gray-600 font-medium">
-                      Assignment Date
-                    </th>
-                    <th className="text-center py-2 px-3 text-xs text-gray-600 font-medium">
-                      Assigned Amount
-                    </th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {roomDetails.map((room, index) => (
-                    <tr key={index} className="border-t border-gray-200">
-                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-900 text-center">{room.roomType}</td>
-                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-700 text-center">{room.roomNumber}</td>
-                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-700 text-center">{room.assignmentDate}</td>
-                      <td className="py-2 px-3 text-xs sm:text-sm text-gray-900 text-center">${room.assignedAmount}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
-         
+        <div className="flex justify-end space-x-3 p-6 border-t bg-gray-50 rounded-b-lg">
+          <button
+            onClick={handleCloseModal}
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-md transition-colors"
+          >
+            Close
+          </button>
+          <button
+            onClick={handleAccept}
+            className="px-4 py-2 text-sm font-medium text-white bg-[#076DB3] hover:bg-[#054f80] rounded-md transition-colors"
+          >
+            Accept
+          </button>
         </div>
       </div>
     </div>

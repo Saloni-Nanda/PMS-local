@@ -133,11 +133,13 @@ const Page: React.FC = () => {
           {/* Export and Search Row */}
           <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
             <div className="flex flex-col sm:flex-row gap-2 order-2 sm:order-1">
-              <button
-                className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer"
-              >
-                Add
-              </button>
+              <Link href="advance-payments/add-advance-payments">
+                <button
+                  className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer"
+                >
+                  Add
+                </button>
+              </Link>
               <button
                 className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer"
               >

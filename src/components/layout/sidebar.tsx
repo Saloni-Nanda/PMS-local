@@ -15,11 +15,11 @@ import {
   CreditCard,
   LogOut,
   ChevronLeft,
-  CalendarCheck
+  CalendarCheck,
+  ChevronsLeftRightIcon
 } from 'lucide-react'
 
 const navigation = [
-  { name: 'Home', href: '/', icon: Home },
   {
     name: 'Bookings',
     href: '/bookings/search',
@@ -97,13 +97,10 @@ export function Sidebar() {
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b flex-shrink-0" style={{ borderColor: themeColor }}>
+      <div className="flex items-center justify-between px-5 border-b flex-shrink-0" style={{ borderColor: themeColor }}>
         {!collapsed && (
-          <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 rounded-lg flex items-center justify-center" style={{ backgroundColor: themeColor }}>
-              <span className="font-bold text-sm text-white">H</span>
-            </div>
-            <span className="font-semibold" style={{ color: themeColor }}>HotelStar</span>
+          <div className="flex items-center space-x-2 justify-center">
+            <img src="/logo.png" alt="" className='w-24 p-2'/>
           </div>
         )}
         <button
@@ -111,7 +108,7 @@ export function Sidebar() {
           className={cn('p-1 focus:outline-none', collapsed && 'w-full')}
           style={{ color: themeColor }}
         >
-          <ChevronLeft
+          <ChevronsLeftRightIcon
             className={cn(
               'h-4 w-4 transition-transform',
               collapsed && 'rotate-180'
