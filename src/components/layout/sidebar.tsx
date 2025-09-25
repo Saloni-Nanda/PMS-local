@@ -97,7 +97,7 @@ export function Sidebar() {
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 border-b flex-shrink-0" style={{ borderColor: themeColor }}>
+      <div className="flex items-center justify-between px-5 border-b flex-shrink-0 h-18" style={{ borderColor: themeColor }}>
         {!collapsed && (
           <div className="flex items-center space-x-2 justify-center">
             <img src="/logo.png" alt="" className='w-24 p-2'/>

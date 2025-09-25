@@ -15,7 +15,8 @@ import { Bell, Settings, User, LogOut, ChevronDown } from 'lucide-react'
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between px-8 py-3.5 bg-white border-b border-[#076DB3]">
+    <header className="flex items-center justify-between px-8 py-3.5 h-18 bg-white border-b border-[#076DB3]"
+    >
       {/* Logo/Brand Space */}
       <div className="flex items-center">
        
