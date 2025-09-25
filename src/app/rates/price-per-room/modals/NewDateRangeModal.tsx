@@ -59,7 +59,7 @@ export default function NewDateRangeModal({
           </button>
           <button
             onClick={handleAccept}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-[#076DB3] text-white rounded-lg hover:bg-[#054f80]"
           >
             Accept
           </button>

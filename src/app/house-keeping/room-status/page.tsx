@@ -100,24 +100,20 @@ const Page: React.FC = () => {
         <div className="py-5 px-4 border-b border-gray-200 flex flex-wrap justify-between items-center gap-4">
           {/* Export Buttons */}
           <div className="flex gap-2">
-            <button className="px-5 py-2 bg-gray-600 text-white text-sm">Export Excel</button>
-            <button className="px-5 py-2 bg-sky-300 text-white text-sm">Export PDF</button>
+            <button className="px-5 py-2 bg-gray-500 hover:bg-gray-700 text-white text-sm rounded-md">Export Excel</button>
+            <button className="px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] text-white text-sm rounded-md">Export PDF</button>
           </div>
 
           {/* Date Picker */}
           <div className="flex items-center gap-2">
             <label className="font-normal text-gray-600 whitespace-nowrap">Date:</label>
-            <div className="relative">
-              <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
-                <Calendar size={16} />
-              </span>
               <input
                 type="date"
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] text-gray-600 focus:ring focus:ring-blue-200"
+                className="px-2 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] text-gray-600 focus:ring focus:ring-blue-200"
               />
-            </div>
+            
           </div>
         </div>
       </div>
@@ -132,7 +128,7 @@ const Page: React.FC = () => {
               setOpenFloor(null);
             }}
             className={`px-4 py-2 rounded-md font-medium ${
-              activeBuilding === building.name ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-700"
+              activeBuilding === building.name ? "bg-[#076DB3] text-white" : "bg-gray-200 text-gray-700"
             }`}
           >
             {building.name}
@@ -159,7 +155,7 @@ const Page: React.FC = () => {
             </button>
 
             {openFloor === floor.floorNumber && (
-              <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 p-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 p-4">
                 {floor.rooms.map((room) => (
                   <div
                     key={room.id}
@@ -169,7 +165,7 @@ const Page: React.FC = () => {
                     <div className="flex gap-2 text-sm">
                       <span
                         className={`${
-                          room.status === "Vacant" ? "text-blue-500" : "text-red-500"
+                          room.status === "Vacant" ? "text-[#076DB3]" : "text-red-500"
                         } cursor-pointer`}
                         onClick={() => openModal(room)}
                       >

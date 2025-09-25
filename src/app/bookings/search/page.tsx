@@ -3,6 +3,7 @@ import { Search, ChevronDown, ListFilterIcon } from 'lucide-react';
 import React, { useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
+import { Button } from '@/components/ui/button';
 
 interface BookingData {
     id: number;
@@ -79,7 +80,7 @@ const Page: React.FC = () => {
                                     type="date"
                                     value={fromDate ? fromDate.toISOString().split("T")[0] : ""}
                                     onChange={(e) => setFromDate(new Date(e.target.value))}
-                                    className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                                    className="px-3 py-2 border border-gray-500 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
                                 />
                             </div>
 
@@ -89,7 +90,7 @@ const Page: React.FC = () => {
                                     type="date"
                                     value={toDate ? toDate.toISOString().split("T")[0] : ""}
                                     onChange={(e) => setToDate(new Date(e.target.value))}
-                                    className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                                    className="px-3 py-2 border border-gray-500 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
                                 />
                             </div>
                         </div>
@@ -102,7 +103,7 @@ const Page: React.FC = () => {
                                 </label>
                                 <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
                                     <Listbox value={searchBy} onChange={setSearchBy}>
-                                        <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                                        <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-500 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
                                             {searchBy}
                                             <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
                                         </ListboxButton>
@@ -121,7 +122,7 @@ const Page: React.FC = () => {
                                 </div>
                             </div>
 
-                            <button className="px-4 sm:px-6 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
+                            <button className="px-4 sm:px-6 py-2 bg-white border border-gray-500 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                                 <ListFilterIcon size={14} />
                                 <span className="">Filter</span>
                             </button>
@@ -267,7 +268,9 @@ const Page: React.FC = () => {
                                             href="/bookings/search/see"
                                             className="flex items-center justify-center"
                                         >
-                                            <Search size={16} />
+                                            <Button variant="ghost" size="icon" className="h-4 w-4 p-0" asChild>
+                                                <Search />
+                                            </Button>
                                         </Link>
                                     </td>
 

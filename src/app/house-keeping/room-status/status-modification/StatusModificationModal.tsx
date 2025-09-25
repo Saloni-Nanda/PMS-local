@@ -86,11 +86,11 @@ const StatusModificationModal: React.FC<Props> = ({
 
         {/* Buttons */}
         <div className="flex justify-end space-x-3">
-          <button className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-800" onClick={onClose}>
+          <button className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-700" onClick={onClose}>
             Close
           </button>
           <button
-            className="bg-blue-400 text-white px-4 py-2 rounded-lg hover:bg-blue-500"
+            className="bg-[#076DB3] hover:bg-[#054f80] text-white px-4 py-2 rounded-lg "
             onClick={() => onSave(status, condition)}
           >
             Accept

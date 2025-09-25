@@ -15,8 +15,28 @@ function formatDate(dateStr: string) {
     });
 }
 
+// Define types
+type Rates = {
+    adult1: string;
+    adult2: string;
+    adult3: string;
+    adult4: string;
+    extraAdults: string;
+    child: string;
+};
+
+type Room = {
+    type: string;
+    rates: Rates[];
+};
+
+type DateRange = {
+    from: string;
+    until: string;
+};
+
 // Initial room data with full rates
-const initialRoomData = [
+const initialRoomData: Room[] = [
     {
         type: "D1",
         rates: [
@@ -41,20 +61,20 @@ const initialRoomData = [
 ];
 
 // Date ranges
-const initialDateRanges = [
+const initialDateRanges: DateRange[] = [
     { from: "Tuesday, January 4, 2022", until: "Wednesday, December 14, 2022" },
     { from: "Thursday, December 15, 2022", until: "Saturday, January 14, 2023" },
 ];
 
 export default function Page() {
-    const [roomData, setRoomData] = useState(initialRoomData);
-    const [dateRanges, setDateRanges] = useState(initialDateRanges);
+    const [roomData, setRoomData] = useState<Room[]>(initialRoomData);
+    const [dateRanges, setDateRanges] = useState<DateRange[]>(initialDateRanges);
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
     const [selectedCell, setSelectedCell] = useState<{ roomIndex: number; rangeIndex: number }>({ roomIndex: 0, rangeIndex: 0 });
-    const [selectedRates, setSelectedRates] = useState<Record<string, string>>({});
+    const [selectedRates, setSelectedRates] = useState<Rates | null>(null);
 
     const openModal = () => setIsModalOpen(true);
     const closeModal = () => setIsModalOpen(false);
@@ -67,18 +87,19 @@ export default function Page() {
 
     const closeEditModal = () => setIsEditModalOpen(false);
 
-    const handleAcceptEdit = (newRates: Record<string, string>) => {
-        setRoomData((prev) => {
-            return prev.map((room, roomIndex) => {
-                if (roomIndex !== selectedCell.roomIndex) return room;
-                return {
-                    ...room,
-                    rates: room.rates.map((rate, rateIndex) =>
-                        rateIndex === selectedCell.rangeIndex ? { ...newRates } : rate
-                    ),
-                };
-            });
-        });
+    const handleAcceptEdit = (newRates: Rates) => {
+        setRoomData((prev) =>
+            prev.map((room, roomIndex) =>
+                roomIndex === selectedCell.roomIndex
+                    ? {
+                          ...room,
+                          rates: room.rates.map((rate, rateIndex) =>
+                              rateIndex === selectedCell.rangeIndex ? { ...newRates } : rate
+                          ),
+                      }
+                    : room
+            )
+        );
     };
 
     const handleAcceptNewRange = (from: string, to: string) => {
@@ -107,7 +128,7 @@ export default function Page() {
             <div className="flex justify-between items-center mb-2">
                 <h2 className="text-lg font-semibold ">Room Pricing</h2>
                 <button
-                    className="flex items-center space-x-2 px-4 py-2 bg-blue-600 text-white rounded-md shadow hover:bg-blue-700 text-sm"
+                    className="flex items-center space-x-2 px-4 py-2 bg-[#076DB3] text-white rounded-md shadow hover:bg-[#054f80] text-sm"
                     onClick={openModal}
                 >
                     <Plus className="w-4 h-4" />
@@ -177,7 +198,7 @@ export default function Page() {
                 isOpen={isEditModalOpen}
                 onClose={closeEditModal}
                 onAccept={handleAcceptEdit}
-                initialRates={selectedRates}
+                initialRates={selectedRates ?? { adult1: "", adult2: "", adult3: "", adult4: "", extraAdults: "", child: "" }}
             />
         </div>
     );

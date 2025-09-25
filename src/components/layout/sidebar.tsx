@@ -35,6 +35,7 @@ const navigation = [
     icon: Users,
     children: [
       { name: 'Advance Payments', href: '/frontdesk/advance-payments' },
+      { name: 'Stay Extension', href: '/inventory/inventory-management' },
       { name: 'Room Assignment', href: '/frontdesk/room-assignment' },
       { name: 'Cash', href: '/frontdesk/cash' },
       { name: 'Room Change', href: '/frontdesk/room-change' },
@@ -151,7 +152,7 @@ export function Sidebar() {
 
                     {/* Sub-navigation */}
                     {item.children && !collapsed && isActive && (
-                      <div className="ml-6 mt-1 space-y-1">
+                      <div className="ml-10 mt-1 space-y-1">
                         {item.children.map((child) => (
                           <Link key={child.name} href={child.href}>
                             <Button
@@ -161,7 +162,7 @@ export function Sidebar() {
                                 'w-full justify-start text-sm transition-colors font',
                                 pathname === child.href ? 'font-medium' : 'hover:bg-opacity-10'
                               )}
-                              style={pathname === child.href
+                              style={pathname.startsWith(child.href)
                                 ? { fontWeight: 'bold', color: themeColor }
                                 : { color: '#2C3E50' }
                               }

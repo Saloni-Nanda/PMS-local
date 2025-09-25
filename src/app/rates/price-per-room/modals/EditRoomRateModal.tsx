@@ -2,11 +2,21 @@
 
 import { useState, useEffect } from "react";
 
+// Define Rates type
+export interface Rates {
+  adult1: string;
+  adult2: string;
+  adult3: string;
+  adult4: string;
+  extraAdults: string;
+  child: string;
+}
+
 interface EditRoomRateModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onAccept: (rates: Record<string, string>) => void;
-  initialRates?: Record<string, string>; 
+  onAccept: (rates: Rates) => void;   // ✅ Strongly typed
+  initialRates?: Rates;               // ✅ Matches Rates type
 }
 
 export default function EditRoomRateModal({
@@ -15,7 +25,7 @@ export default function EditRoomRateModal({
   onAccept,
   initialRates,
 }: EditRoomRateModalProps) {
-  const [rates, setRates] = useState<Record<string, string>>({
+  const [rates, setRates] = useState<Rates>({
     adult1: "",
     adult2: "",
     adult3: "",
@@ -24,7 +34,7 @@ export default function EditRoomRateModal({
     child: "",
   });
 
-  // Prefill when modal opens, safely handling undefined values
+  // Prefill when modal opens
   useEffect(() => {
     if (initialRates) {
       setRates({
@@ -40,7 +50,7 @@ export default function EditRoomRateModal({
 
   if (!isOpen) return null;
 
-  const handleChange = (key: string, value: string) => {
+  const handleChange = (key: keyof Rates, value: string) => {
     setRates((prev) => ({ ...prev, [key]: value }));
   };
 
@@ -58,8 +68,8 @@ export default function EditRoomRateModal({
         <h2 className="text-xl font-semibold mb-4">Edit Room Rate</h2>
 
         <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          {["adult1","adult2","adult3","adult4","extraAdults","child"].map((key, index) => (
-            <div key={index}>
+          {(Object.keys(rates) as (keyof Rates)[]).map((key) => (
+            <div key={key}>
               <label className="block mb-1">
                 {key === "adult1" ? "1 adult" :
                  key === "adult2" ? "2 adults" :
@@ -70,7 +80,7 @@ export default function EditRoomRateModal({
               </label>
               <input
                 type="number"
-                value={rates[key] ?? ""}
+                value={rates[key]}
                 onChange={(e) => handleChange(key, e.target.value)}
                 className="w-full border px-2 py-1 rounded"
               />
@@ -87,7 +97,7 @@ export default function EditRoomRateModal({
           </button>
           <button
             onClick={handleAccept}
-            className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
+            className="px-4 py-2 bg-[#076DB3] text-white rounded-lg hover:bg-[#054f80]"
           >
             Accept
           </button>

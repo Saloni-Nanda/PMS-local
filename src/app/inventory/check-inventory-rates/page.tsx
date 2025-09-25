@@ -88,7 +88,7 @@ export default function Page() {
                         <option>All Rooms</option>
                     </select>
                 </div>
-                <button className="px-4 py-1 bg-blue-600 text-white rounded text-sm">
+                <button className="px-4 py-1 bg-[#076DB3] text-white rounded text-sm">
                     Filter
                 </button>
             </div>

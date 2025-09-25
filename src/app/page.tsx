@@ -1,12 +1,8 @@
-import React from 'react'
+import { redirect } from 'next/navigation';
 
-const page = () => {
-  return (
-    <div>
-      
-    </div>
-  )
+const Page = () => {
+  redirect('/bookings/search'); // must match folder structure
+  return null; // page itself renders nothing
 }
 
-export default page
-
+export default Page;
