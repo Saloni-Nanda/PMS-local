@@ -195,13 +195,13 @@ const Page = () => {
         <div className="flex justify-end space-x-3 p-6 border-t bg-gray-50 rounded-b-lg">
           <button
             onClick={handleCloseModal}
-            className="px-4 py-2 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-md transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-md transition-colors cursor-pointer"
           >
             Close
           </button>
           <button
             onClick={handleAccept}
-            className="px-4 py-2 text-sm font-medium text-white bg-[#076DB3] hover:bg-[#054f80] rounded-md transition-colors"
+            className="px-4 py-2 text-sm font-medium text-white bg-[#076DB3] hover:bg-[#054f80] rounded-md transition-colors cursor-pointer"
           >
             Accept
           </button>

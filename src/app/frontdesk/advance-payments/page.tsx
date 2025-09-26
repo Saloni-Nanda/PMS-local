@@ -1,8 +1,10 @@
 "use client"
 import { Search, ChevronDown, ListFilterIcon } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
+import CustomDatePicker from '@/components/ui/customDatePicker';
+import { Button } from '@/components/ui/button';
 
 interface AdvancePayments {
   id: string;
@@ -15,6 +17,11 @@ interface AdvancePayments {
   currency: string;
 }
 
+interface SortConfig {
+  key: keyof AdvancePayments | null;
+  direction: 'asc' | 'desc';
+}
+
 const Page: React.FC = () => {
   const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
   const [toDate, setToDate] = useState(new Date("2022-08-20"));
@@ -22,6 +29,7 @@ const Page: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const statusOptions = ["Non Selected"];
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
   const advancePayments: AdvancePayments[] = [
     {
@@ -56,15 +64,67 @@ const Page: React.FC = () => {
     },
   ];
 
-  const filteredBookings = advancePayments.filter(advancePayments =>
-    advancePayments.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    advancePayments.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredBookings = advancePayments.filter(advancePayments =>
+  //   advancePayments.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   advancePayments.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
+  const filteredPayments = useMemo(() => {
+    return advancePayments.filter(advancePayment =>
+      advancePayment.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      advancePayment.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  }, [searchTerm, advancePayments])
 
-  const SortIcon: React.FC = () => (
-    <span className="ml-1 text-gray-400 text-xs">⇅</span>
-  );
+  const sortedPayments = useMemo(() => {
+    if (!sortConfig.key) return filteredPayments;
+    return [...filteredPayments].sort((a, b) => {
+      const aValue = a[sortConfig.key!];
+      const bValue = b[sortConfig.key!];
+
+      let comparison = 0;
+
+      if (aValue instanceof Date && bValue instanceof Date) {
+        comparison = aValue.getTime() - bValue.getTime();
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else {
+        comparison = String(aValue).localeCompare(String(bValue));
+      }
+
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
+    });
+  }, [filteredPayments, sortConfig])
+
+  const handleSort = (key: keyof AdvancePayments) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    setSortConfig({ key, direction });
+  }
+  const SortIcon: React.FC<{ sortKey: keyof AdvancePayments }> = ({ sortKey }) => {
+    const getSortIcon = () => {
+      if (sortConfig.key !== sortKey) {
+        return <span className=" text-gray-800 text-xs">⇅</span>;
+      }
+
+      return sortConfig.direction === 'asc'
+        ? <span className=" text-gray-800 text-xs">⇅</span>
+        : <span className=" text-gray-800 text-xs">⇅</span>;
+    };
+
+    return (
+      <button
+        onClick={() => handleSort(sortKey)}
+        className="hover:bg-gray-300 p-1 rounded transition-colors"
+        type="button"
+      >
+        {getSortIcon()}
+      </button>
+    );
+  };
 
   return (
     <div className="">
@@ -76,22 +136,21 @@ const Page: React.FC = () => {
             {/* Date Inputs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">From:</label>
-                <input
-                  type="date"
-                  value={fromDate ? fromDate.toISOString().split("T")[0] : ""}
-                  onChange={(e) => setFromDate(new Date(e.target.value))}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">From:</label>
+                <CustomDatePicker
+                  selectedDate={fromDate}
+                  onChange={setFromDate}
+                  placeholder="Select From Date"
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">To:</label>
-                <input
-                  type="date"
-                  value={toDate ? toDate.toISOString().split("T")[0] : ""}
-                  onChange={(e) => setToDate(new Date(e.target.value))}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">To:</label>
+                <CustomDatePicker
+                  selectedDate={toDate}
+                  onChange={setToDate}
+                  placeholder="Select To Date"
+                  minDate={fromDate} // prevent To date < From date
                 />
               </div>
             </div>
@@ -99,12 +158,12 @@ const Page: React.FC = () => {
             {/* Status Filter and Filter Button */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">
                   Status:
                 </label>
                 <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
                   <Listbox value={selectedStatus} onChange={setSelectedStatus}>
-                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-400 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
                       {selectedStatus}
                       <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
                     </ListboxButton>
@@ -123,7 +182,7 @@ const Page: React.FC = () => {
                 </div>
               </div>
 
-              <button className="px-4 sm:px-6 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
+              <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                 <ListFilterIcon size={14} />
                 <span className="hidden sm:inline">Filter</span>
               </button>
@@ -154,14 +213,14 @@ const Page: React.FC = () => {
 
             <div className="flex items-center gap-2 order-1 sm:order-2">
               <div className="relative w-full sm:w-auto">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                   <Search size={16} />
                 </span>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200"
+                  className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200 placeholder-gray-600"
                   placeholder="Search..."
                 />
               </div>
@@ -175,82 +234,82 @@ const Page: React.FC = () => {
           <table className="w-full border-1 min-w-[900px]">
             <thead>
               <tr>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       NO ADVANCE<br />PAYMENT
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='id' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-30">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-30">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       BOOKING<br />NUMBER
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='bookingNumber' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       ARRIVAL<br />DATE
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='arrivalDate' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       GUEST<br />NAME
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='guestName' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       PAYMENT<br />METHOD
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='paymentMethod' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       ADVANCE<br />PAYMENT
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='advancePayment' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       NOT<br />ASSIGNED
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='notAssigned' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-12">
+                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-12">
                   <div className="flex justify-center gap-1 items-center">
                     <div>CURRENCY</div>
-                    <SortIcon />
+                    <SortIcon sortKey='currency' />
                   </div>
                 </th>
-                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-12">
+                <th className="bg-gray-50 px-2 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-12">
                   ACTION
                 </th>
               </tr>
             </thead>
-            <tbody className='text-gray-600'>
-              {filteredBookings.length === 0 ? (
+            <tbody className='text-gray-700'>
+              {filteredPayments.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-3 py-8 text-center text-gray-500">
                     No records found matching your search criteria.
                   </td>
                 </tr>
               ) : (
-                filteredBookings.map((payment) => (
+                sortedPayments.map((payment) => (
                   <tr key={payment.id} className="hover:bg-gray-50">
                     <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                       {payment.id}
@@ -277,10 +336,15 @@ const Page: React.FC = () => {
                       {payment.currency}
                     </td>
                     <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle">
-                      <Link href="advance-payments/see-advance-payments">
-                        <button className="text-gray-600 items-center">
-                          <Search size={16} />
-                        </button>
+                      <Link
+                        href="/frontdesk/advance-payments/see-advance-payments"
+                        className="flex items-center justify-center"
+                      >
+                        <Button variant="ghost" size="icon" className="h-4 w-4 p-0" asChild>
+                          <span>
+                            <Search size={14} />
+                          </span>
+                        </Button>
                       </Link>
                     </td>
                   </tr>
@@ -295,7 +359,7 @@ const Page: React.FC = () => {
         {/* Pagination Section */}
         <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
           <div className="text-gray-600 text-sm order-2 sm:order-1">
-            Showing {filteredBookings.length > 0 ? 1 : 0} to {Math.min(10, filteredBookings.length)} of {filteredBookings.length} rows
+            Showing {filteredPayments.length > 0 ? 1 : 0} to {Math.min(10, filteredPayments.length)} of {filteredPayments.length} rows
           </div>
 
           <div className="flex items-center gap-1 sm:gap-2 order-1 sm:order-2 flex-wrap justify-center">

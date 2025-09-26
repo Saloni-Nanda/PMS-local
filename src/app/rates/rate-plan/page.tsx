@@ -1,9 +1,9 @@
 "use client"
 import { Search, ChevronDown, Filter, Edit2, Trash2, EditIcon } from 'lucide-react';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 
-interface RatePlan {
+interface RatePlanData {
     id: string;
     ratePlan: string;
     rateName: string;
@@ -14,13 +14,17 @@ interface RatePlan {
     currency: string;
     commissionable: string;
 }
-
+interface SortConfig {
+    key: keyof RatePlanData | null;
+    direction: 'asc' | 'desc';
+}
 const Page: React.FC = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
+    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-    const ratePlans: RatePlan[] = [
+    const ratePlans: RatePlanData[] = [
         {
             id: "1",
             ratePlan: "AGEN",
@@ -100,16 +104,76 @@ const Page: React.FC = () => {
         }
     ];
 
-    const filteredRatePlans = ratePlans.filter(ratePlan =>
-        ratePlan.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    // const filteredRatePlans = ratePlans.filter(ratePlan =>
+    //     ratePlan.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     ratePlan.rateName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     ratePlan.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     ratePlan.policy.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
+
+    const filteredRatePlans = useMemo(() => {
+        return ratePlans.filter(ratePlan =>
+            ratePlan.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ratePlan.rateName.toLowerCase().includes(searchTerm.toLowerCase()) ||
         ratePlan.type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        ratePlan.policy.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+        ratePlan.policy.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ratePlan.status.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ratePlan.mealPlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ratePlan.currency.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        ratePlan.commissionable.toLowerCase().includes(searchTerm.toLowerCase()) 
+        )
+    },[searchTerm, ratePlans])
 
-    const SortIcon: React.FC = () => (
-        <span className="ml-1 text-gray-400 text-xs">⇅</span>
-    );
+    const sortedRatePlans = useMemo(() => {
+            if (!sortConfig.key) return filteredRatePlans;
+    
+            return [...filteredRatePlans].sort((a, b) => {
+                const aValue = a[sortConfig.key!];
+                const bValue = b[sortConfig.key!];
+    
+                let comparison = 0;
+    
+                 if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    comparison = aValue - bValue;
+                }  else {
+                    comparison = String(aValue).localeCompare(String(bValue));
+                }
+    
+                return sortConfig.direction === 'asc' ? comparison : -comparison;
+            });
+        }, [filteredRatePlans, sortConfig]);
+    
+        const handleSort = (key: keyof RatePlanData) => {
+            let direction: 'asc' | 'desc' = 'asc';
+            if (sortConfig.key === key && sortConfig.direction === 'asc') {
+                direction = 'desc';
+            }
+    
+            setSortConfig({ key, direction });
+        };
+    
+        const SortIcon: React.FC<{ sortKey: keyof RatePlanData }> = ({ sortKey }) => {
+            const getSortIcon = () => {
+                if (sortConfig.key !== sortKey) {
+                    return <span className=" text-gray-800 text-xs">⇅</span>;
+                }
+    
+                return sortConfig.direction === 'asc'
+                    ? <span className=" text-gray-800 text-xs">⇅</span>
+                    : <span className=" text-gray-800 text-xs">⇅</span>;
+            };
+    
+            return (
+                <button
+                    onClick={() => handleSort(sortKey)}
+                    className="hover:bg-gray-300 p-1 rounded transition-colors"
+                    type="button"
+                >
+                    {getSortIcon()}
+                </button>
+            );
+        };
+    
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
@@ -145,14 +209,14 @@ const Page: React.FC = () => {
 
                         <div className="flex items-center gap-2 order-1 sm:order-2">
                             <div className="relative w-full sm:w-auto">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                                     <Search size={16} />
                                 </span>
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] focus:ring focus:ring-[#076DB3]"
+                                    className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-[#076DB3] placeholder-gray-600"
                                     placeholder="Search..."
                                 />
                             </div>
@@ -165,68 +229,68 @@ const Page: React.FC = () => {
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-36">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-36">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             RATE PLAN
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='ratePlan'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-40">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             RATE NAME
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='rateName'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>TYPE</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='type'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>STATUS</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='status'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-32">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             MEAL<br />PLAN
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='mealPlan'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>POLICY</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='policy'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>CURRENCY</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='currency'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-32">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             COMMISSIONABLE
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='commissionable'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     ACTION
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="text-gray-600">
+                        <tbody className="text-gray-700">
                             {filteredRatePlans.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="px-3 py-8 text-center text-gray-500">
@@ -234,16 +298,16 @@ const Page: React.FC = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                filteredRatePlans.map((ratePlan) => (
+                                sortedRatePlans.map((ratePlan) => (
                                     <tr key={ratePlan.id} className="hover:bg-gray-50">
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center font-medium">
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center ">
                                             {ratePlan.ratePlan}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             {ratePlan.rateName}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            <span className={`px-2 py-1 rounded-full text-xs font-medium `}>
+                                            <span className={`px-2 py-1 rounded-full text-xs `}>
                                                 {ratePlan.type}
                                             </span>
                                         </td>
@@ -272,11 +336,11 @@ const Page: React.FC = () => {
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <div className="flex justify-center gap-2">
                                                 <Link href="/rates/rate-plan/edit">
-                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors">
+                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
                                                         <EditIcon size={12} />
                                                     </button>
                                                 </Link>
-                                                <button className="text-red-600 hover:text-red-800 transition-colors mb-1">
+                                                <button className="text-red-600 hover:text-red-800 transition-colors mb-1 cursor-pointer">
                                                     <Trash2 size={12} />
                                                 </button>
                                             </div>

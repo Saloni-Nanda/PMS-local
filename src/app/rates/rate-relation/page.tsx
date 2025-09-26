@@ -1,7 +1,8 @@
 "use client"
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Search, Edit2, Trash2, EditIcon, ListFilterIcon } from 'lucide-react';
 import Link from 'next/link';
+import CustomDatePicker from '@/components/ui/customDatePicker';
 
 interface RateRelatedData {
     id: string;
@@ -11,11 +12,17 @@ interface RateRelatedData {
     relationType: string;
 }
 
+interface SortConfig {
+    key: keyof RateRelatedData | null;
+    direction: 'asc' | 'desc';
+}
+
 const Page: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [date, setDate] = useState(new Date("2022-08-20"));
+    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-    const rateData: RateRelatedData[] = [
+    const rateDatas: RateRelatedData[] = [
         {
             id: "1",
             baseRate: "RACK",
@@ -46,15 +53,70 @@ const Page: React.FC = () => {
         }
     ];
 
-    const filteredData = rateData.filter(item =>
-        item.baseRate.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.rateRelated.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.relationType.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // const filteredData = rateData.filter(item =>
+    //     item.baseRate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     item.rateRelated.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     item.relationType.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
 
-    const SortIcon: React.FC = () => (
-        <span className="ml-1 text-gray-400 text-xs">⇅</span>
-    );
+    const filteredData = useMemo(() => {
+        return rateDatas.filter(data =>
+            data.baseRate.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            data.rateRelated.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            data.value.toString().includes(searchTerm) ||
+            data.relationType.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    }, [searchTerm, rateDatas])
+
+     const sortedData = useMemo(() => {
+            if (!sortConfig.key) return filteredData;
+    
+            return [...filteredData].sort((a, b) => {
+                const aValue = a[sortConfig.key!];
+                const bValue = b[sortConfig.key!];
+    
+                let comparison = 0;
+    
+                if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    comparison = aValue - bValue;
+                } else {
+                    comparison = String(aValue).localeCompare(String(bValue));
+                }
+    
+                return sortConfig.direction === 'asc' ? comparison : -comparison;
+            });
+        }, [filteredData, sortConfig]);
+
+        const handleSort = (key: keyof RateRelatedData) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+
+        setSortConfig({ key, direction });
+    };
+
+    const SortIcon: React.FC<{ sortKey: keyof RateRelatedData }> = ({ sortKey }) => {
+            const getSortIcon = () => {
+                if (sortConfig.key !== sortKey) {
+                    return <span className=" text-gray-800 text-xs">⇅</span>;
+                }
+    
+                return sortConfig.direction === 'asc'
+                    ? <span className=" text-gray-800 text-xs">⇅</span>
+                    : <span className=" text-gray-800 text-xs">⇅</span>;
+            };
+    
+            return (
+                <button
+                    onClick={() => handleSort(sortKey)}
+                    className="hover:bg-gray-300 p-1 rounded transition-colors"
+                    type="button"
+                >
+                    {getSortIcon()}
+                </button>
+            );
+        };
 
     return (
         <div className="bg-white rounded-lg overflow-hidden">
@@ -65,16 +127,15 @@ const Page: React.FC = () => {
                     {/* Date Inputs */}
                     <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
                         <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                            <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">From:</label>
-                            <input
-                                type="date"
-                                value={date ? date.toISOString().split("T")[0] : ""}
-                                onChange={(e) => setDate(new Date(e.target.value))}
-                                className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
-                            />
+                            <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">From:</label>
+                            <CustomDatePicker
+                                    selectedDate={date}
+                                    onChange={setDate}
+                                    placeholder="Select From Date"
+                                />
                         </div>
                     </div>
-                    <button className="px-4 sm:px-6 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
+                    <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                         <ListFilterIcon size={14} />
                         <span className="hidden sm:inline">Filter</span>
                     </button>
@@ -98,14 +159,14 @@ const Page: React.FC = () => {
 
                     <div className="flex items-center gap-2 order-1 sm:order-2">
                         <div className="relative w-full sm:w-auto">
-                            <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                            <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                                 <Search size={16} />
                             </span>
                             <input
                                 type="text"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] focus:ring focus:ring-[#076DB3]"
+                                className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-[#076DB3] placeholder-gray-600"
                                 placeholder="Search..."
                             />
                         </div>
@@ -118,42 +179,42 @@ const Page: React.FC = () => {
                 <table className="w-full border-1 min-w-[800px]">
                     <thead>
                         <tr>
-                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200">
+                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200">
                                 <div className="flex justify-center gap-1 items-center">
                                     <div className="leading-tight">
                                         BASE RATE
                                     </div>
-                                    <SortIcon />
+                                    <SortIcon sortKey='baseRate'/>
                                 </div>
                             </th>
-                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200">
+                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200">
                                 <div className="flex justify-center gap-1 items-center">
                                     <div className="leading-tight">
                                         RATE RELATED
                                     </div>
-                                    <SortIcon />
+                                    <SortIcon sortKey='rateRelated'/>
                                 </div>
                             </th>
-                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200">
+                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200">
                                 <div className="flex justify-center gap-1 items-center">
                                     <div>VALUE</div>
-                                    <SortIcon />
+                                    <SortIcon sortKey='value'/>
                                 </div>
                             </th>
-                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200">
+                            <th className="bg-gray-50 px-4 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200">
                                 <div className="flex justify-center gap-1 items-center">
                                     <div className="leading-tight">
                                         RELATION TYPE
                                     </div>
-                                    <SortIcon />
+                                    <SortIcon sortKey='relationType'/>
                                 </div>
                             </th>
-                            <th className="bg-gray-50 px-4 py-3 text-center font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200">
+                            <th className="bg-gray-50 px-4 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200">
                                 ACTION
                             </th>
                         </tr>
                     </thead>
-                    <tbody className="text-gray-600 bg-white">
+                    <tbody className="text-gray-700 bg-white">
                         {filteredData.length === 0 ? (
                             <tr>
                                 <td colSpan={5} className="px-4 py-8 text-center text-gray-500">
@@ -161,7 +222,7 @@ const Page: React.FC = () => {
                                 </td>
                             </tr>
                         ) : (
-                            filteredData.map((item, index) => (
+                            sortedData.map((item, index) => (
                                 <tr
                                     key={item.id}
                                     className={`hover:bg-gray-50 ${index % 2 === 1 ? 'bg-gray-50' : 'bg-white'}`}
@@ -181,11 +242,11 @@ const Page: React.FC = () => {
                                     <td className="px-4 py-3 border-b border-gray-100 text-xs align-middle text-center ">
                                         <div className="flex justify-center gap-2">
                                             <Link href="/rates/rate-relation/edit">
-                                                <button className="text-blue-500 hover:text-blue-700 transition-colors p-1">
+                                                <button className="text-blue-500 hover:text-blue-700 transition-colors p-1 cursor-pointer">
                                                     <EditIcon size={14} />
                                                 </button>
                                             </Link>
-                                            <button className="text-red-500 hover:text-red-700 transition-colors p-1 mb-1">
+                                            <button className="text-red-500 hover:text-red-700 transition-colors p-1 mb-1 cursor-pointer">
                                                 <Trash2 size={14} />
                                             </button>
                                         </div>

@@ -1,10 +1,10 @@
 "use client"
-import { Search, ChevronDown, Filter, Edit2, EditIcon } from 'lucide-react';
-import React, { useState } from 'react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import { Search, EditIcon } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+//import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
 
-interface MaintenanceRecord {
+interface MaintenanceData {
     id: string;
     room: string;
     assignedTo: string;
@@ -16,15 +16,18 @@ interface MaintenanceRecord {
     notes: string;
 }
 
+interface SortConfig {
+    key: keyof MaintenanceData | null;
+    direction: 'asc' | 'desc';
+}
+
 const Page: React.FC = () => {
-    const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
-    const [toDate, setToDate] = useState(new Date("2022-08-20"));
     const [searchTerm, setSearchTerm] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
-    const statusOptions = ["All Status", "Completed", "In Progress", "Pending"];
-    const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
 
-    const maintenanceRecords: MaintenanceRecord[] = [
+    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+
+    const maintenanceDatas: MaintenanceData[] = [
         {
             id: "1",
             room: "101",
@@ -54,22 +57,99 @@ const Page: React.FC = () => {
             reason: "Leaks",
             priority: "Low",
             initiated: new Date("2017-06-20"),
-            completed: new Date("2018-01-18"),
+            completed: null,
             outOfOrder: false,
             notes: "Under maintenance due to leaks, urgent to repair"
         },
     ];
 
-    const filteredRecords = maintenanceRecords.filter(record =>
-        record.room.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        record.notes.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    // Helper function to get priority order value
+    const getPriorityOrder = (priority: string): number => {
+        switch (priority.toLowerCase()) {
+            case 'low': return 1;
+            case 'medium': return 2;
+            case 'high': return 3;
+            default: return 0; // for any unknown priority values
+        }
+    };
 
-    const SortIcon: React.FC = () => (
-        <span className="ml-1 text-gray-400 text-xs">⇅</span>
-    );
+    // const filteredRecords = maintenanceDatas.filter(record =>
+    //     record.room.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     record.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+    //     record.notes.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
 
+    const filteredRecords = useMemo(() => {
+        return maintenanceDatas.filter(record =>
+            record.room.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            record.assignedTo.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            record.notes.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            record.priority.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            record.initiated.toString().includes(searchTerm.toLowerCase()) ||
+            (record.completed ? record.completed.toString() : "")
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+
+        )
+    }, [searchTerm, maintenanceDatas])
+
+    const sortedRecords = useMemo(() => {
+            if (!sortConfig.key) return filteredRecords;
+    
+            return [...filteredRecords].sort((a, b) => {
+                const aValue = a[sortConfig.key!];
+                const bValue = b[sortConfig.key!];
+    
+                let comparison = 0;
+
+                // Special handling for priority sorting
+                if (sortConfig.key === 'priority') {
+                    const aPriorityOrder = getPriorityOrder(aValue as string);
+                    const bPriorityOrder = getPriorityOrder(bValue as string);
+                    comparison = aPriorityOrder - bPriorityOrder;
+                } else if (aValue instanceof Date && bValue instanceof Date) {
+                    comparison = aValue.getTime() - bValue.getTime();
+                } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+                    comparison = aValue - bValue;
+                } else {
+                    comparison = String(aValue).localeCompare(String(bValue));
+                }
+    
+                return sortConfig.direction === 'asc' ? comparison : -comparison;
+            });
+        }, [filteredRecords, sortConfig]);
+
+        const handleSort = (key: keyof MaintenanceData) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+
+        setSortConfig({ key, direction });
+    };
+
+    const SortIcon: React.FC<{ sortKey: keyof MaintenanceData }> = ({ sortKey }) => {
+            const getSortIcon = () => {
+                if (sortConfig.key !== sortKey) {
+                    return <span className=" text-gray-800 text-xs">⇅</span>;
+                }
+    
+                return sortConfig.direction === 'asc'
+                    ? <span className=" text-gray-800 text-xs">⇅</span>
+                    : <span className=" text-gray-800 text-xs">⇅</span>;
+            };
+    
+            return (
+                <button
+                    onClick={() => handleSort(sortKey)}
+                    className="hover:bg-gray-300 p-1 rounded transition-colors"
+                    type="button"
+                >
+                    {getSortIcon()}
+                </button>
+            );
+        };
+    
     const getPriorityColor = (priority: string) => {
         switch (priority.toLowerCase()) {
             case 'high': return 'text-red-600 bg-red-50';
@@ -89,9 +169,9 @@ const Page: React.FC = () => {
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
                         <div className="flex flex-col sm:flex-row gap-2 order-2 sm:order-1">
                             <Link href={"/maintainance/add-maintainance"}>
-                            <button className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer">
-                                Add
-                            </button>
+                                <button className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer">
+                                    Add
+                                </button>
                             </Link>
                             <button className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer">
                                 Export Excel
@@ -103,14 +183,15 @@ const Page: React.FC = () => {
 
                         <div className="flex items-center gap-2 order-1 sm:order-2">
                             <div className="relative w-full sm:w-auto">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                                     <Search size={16} />
                                 </span>
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200"
+                                    className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200
+                                    placeholder-gray-600"
                                     placeholder="Search..."
                                 />
                             </div>
@@ -123,64 +204,64 @@ const Page: React.FC = () => {
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>ROOM</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='room'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-32">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             ASSIGNED<br />TO
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='assignedTo'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>REASON</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='reason'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>PRIORITY</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='priority'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>INITIATED</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='initiated'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>COMPLETED</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='completed'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             OUT OF<br />ORDER
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='outOfOrder'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-40">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div>NOTES</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='notes'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     ACTION
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className="text-gray-600">
+                        <tbody className="text-gray-700">
                             {filteredRecords.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="px-3 py-8 text-center text-gray-500">
@@ -188,7 +269,7 @@ const Page: React.FC = () => {
                                     </td>
                                 </tr>
                             ) : (
-                                filteredRecords.map((record, index) => (
+                                sortedRecords.map((record, index) => (
                                     <tr key={index} className="hover:bg-gray-50">
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             {record.room}
@@ -226,8 +307,8 @@ const Page: React.FC = () => {
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <span className={`px-2 py-1 rounded-full text-xs font-medium ${record.outOfOrder
-                                                    ? 'bg-red-100 text-red-700'
-                                                    : 'bg-green-100 text-green-700'
+                                                ? 'bg-red-100 text-red-700'
+                                                : 'bg-green-100 text-green-700'
                                                 }`}>
                                                 {record.outOfOrder ? 'Yes' : 'No'}
                                             </span>
@@ -239,9 +320,9 @@ const Page: React.FC = () => {
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <Link href={"/maintainance/edit-maintainance"}>
-                                            <button className="text-gray-600 hover:text-blue-600 transition-colors">
-                                                <EditIcon size={16} />
-                                            </button>
+                                                <button className="text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">
+                                                    <EditIcon size={16} />
+                                                </button>
                                             </Link>
                                         </td>
                                     </tr>

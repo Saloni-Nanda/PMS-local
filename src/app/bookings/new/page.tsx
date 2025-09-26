@@ -123,7 +123,7 @@ export default function Page() {
           <div className="pt-2 flex ">
             <button className="px-5 py-2 bg-[#076DB3] text-white text-xs sm:text-sm 
             font-medium rounded-md hover:bg-[#054f80] focus:outline-none focus:ring-1 
-            focus:ring-[#076DB3] focus:ring-offset-1 transition-colors">
+            focus:ring-[#076DB3] focus:ring-offset-1 transition-colors cursor-pointer">
               Search
             </button>
           </div>

@@ -26,7 +26,7 @@ const RoomSelectionStep: React.FC<Pick<StepProps, 'onNext'>> = ({ onNext }) => {
         <div className="space-y-6">
             <RoomSelection />
             <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80]'>
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
                     Go to Payments
                 </Button>
             </div>
@@ -40,7 +40,7 @@ const PaymentStep: React.FC<StepProps> = ({ onNext }) => {
         <div className="space-y-6">
             <Payments/>
             <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80]'>
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
                     Save and go to Guest Info
                 </Button>
             </div>
@@ -54,7 +54,7 @@ const GuestInfoStep: React.FC<StepProps> = ({ onNext }) => {
         <div className="space-y-6">
             <GuestInfo/>
             <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80]'>
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
                     Save and go to Confirmation
                 </Button>
             </div>
@@ -75,11 +75,11 @@ const ConfirmationStep: React.FC<Pick<StepProps, 'onBack'>> = ({ onBack }) => {
             <Confirmation/>
             <div className="flex justify-end gap-2">
                 {onBack && (
-                    <Button variant="outline" onClick={onBack} className='bg-gray-500 hover:bg-gray-700 text-white hover:text-white'>
+                    <Button variant="outline" onClick={onBack} className='bg-gray-500 hover:bg-gray-700 text-white hover:text-white cursor-pointer'>
                         Back to Guest Info
                     </Button>
                 )}
-                <Button className='bg-[#076DB3] hover:bg-[#054f80]' onClick={handleCompleteBooking}>
+                <Button className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer' onClick={handleCompleteBooking}>
                     Complete Booking
                 </Button>
             </div>

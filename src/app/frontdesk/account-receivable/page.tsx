@@ -1,17 +1,22 @@
 "use client"
 import { Search, ChevronDown, ListFilterIcon, FileText, X } from 'lucide-react';
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import CustomDatePicker from '@/components/ui/customDatePicker';
 
-interface AccountReceivableRecord {
+interface AccountReceivableData {
   id: number;
   guestName: string;
   bookingNumber: string;
   roomNumber: string;
-  originalAmount: string;
-  paidAmount: string;
-  date: string;
+  originalAmount: number;
+  paidAmount: number;
+  date: Date;
   notes: string;
+}
+interface SortConfig {
+  key: keyof AccountReceivableData | null;
+  direction: 'asc' | 'desc';
 }
 
 const Page: React.FC = () => {
@@ -26,22 +31,25 @@ const Page: React.FC = () => {
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<AccountReceivableRecord | null>(null);
+  const [selectedRecord, setSelectedRecord] = useState<AccountReceivableData | null>(null);
 
   const [paymentData, setPaymentData] = useState({
     type: paymentTypes[0],
     currency: currencies[0],
     amount: '15.00'
   });
-  const accountsReceivableData: AccountReceivableRecord[] = [
+
+  const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+
+  const accountsReceivables: AccountReceivableData[] = [
     {
       id: 1,
       guestName: "Javier Garcia",
       bookingNumber: "MX19069-W2200054",
       roomNumber: "D1_1",
-      originalAmount: "100.00",
-      paidAmount: "0.00",
-      date: "09/06/2022",
+      originalAmount: 100.00,
+      paidAmount: 0.00,
+      date: new Date("2025-09-23"),
       notes: "er.systems@solution.com"
     },
     {
@@ -49,9 +57,9 @@ const Page: React.FC = () => {
       guestName: "Maria Rodriguez",
       bookingNumber: "MX19070-W2200055",
       roomNumber: "D1_2",
-      originalAmount: "250.00",
-      paidAmount: "100.00",
-      date: "09/07/2022",
+      originalAmount: 250.00,
+      paidAmount: 100.00,
+      date: new Date("2025-09-22"),
       notes: "Partial payment made"
     },
     {
@@ -59,20 +67,81 @@ const Page: React.FC = () => {
       guestName: "Carlos Martinez",
       bookingNumber: "MX19071-W2200056",
       roomNumber: "D1_3",
-      originalAmount: "150.00",
-      paidAmount: "0.00",
-      date: "09/08/2022",
+      originalAmount: 150.00,
+      paidAmount: 0.00,
+      date: new Date("2025-09-29"),
       notes: "carlos.martinez@email.com"
     }
   ];
 
   // Filter records based on search term and status
-  const filteredRecords = accountsReceivableData.filter(record =>
-    record.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    record.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  // const filteredRecords = accountsReceivables.filter(record =>
+  //   record.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+  //   record.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
-  const handlePaymentAction = (record: AccountReceivableRecord) => {
+  const filteredRecords = useMemo(() => {
+    return accountsReceivables.filter(record =>
+      record.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.roomNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      record.date.toString().includes(searchTerm)
+    )
+  }, [searchTerm, accountsReceivables])
+
+  const sortedRecords = useMemo(() => {
+    if (!sortConfig.key) return filteredRecords;
+
+    return [...filteredRecords].sort((a, b) => {
+      const aValue = a[sortConfig.key!];
+      const bValue = b[sortConfig.key!];
+
+      let comparison = 0;
+
+      if (aValue instanceof Date && bValue instanceof Date) {
+        comparison = aValue.getTime() - bValue.getTime();
+      } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+        comparison = aValue - bValue;
+      } else {
+        comparison = String(aValue).localeCompare(String(bValue));
+      }
+
+      return sortConfig.direction === 'asc' ? comparison : -comparison;
+    });
+  }, [filteredRecords, sortConfig]);
+
+  const handleSort = (key: keyof AccountReceivableData) => {
+    let direction: 'asc' | 'desc' = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    setSortConfig({ key, direction });
+  };
+
+  const SortIcon: React.FC<{ sortKey: keyof AccountReceivableData }> = ({ sortKey }) => {
+    const getSortIcon = () => {
+      if (sortConfig.key !== sortKey) {
+        return <span className=" text-gray-800 text-xs">⇅</span>;
+      }
+
+      return sortConfig.direction === 'asc'
+        ? <span className=" text-gray-800 text-xs">⇅</span>
+        : <span className=" text-gray-800 text-xs">⇅</span>;
+    };
+
+    return (
+      <button
+        onClick={() => handleSort(sortKey)}
+        className="hover:bg-gray-300 p-1 rounded transition-colors"
+        type="button"
+      >
+        {getSortIcon()}
+      </button>
+    );
+  };
+
+  const handlePaymentAction = (record: AccountReceivableData) => {
     setSelectedRecord(record);
     setIsPaymentModalOpen(true);
   };
@@ -86,11 +155,6 @@ const Page: React.FC = () => {
     handleCloseModal();
   };
 
-
-  const SortIcon: React.FC = () => (
-    <span className="ml-1 text-gray-400 text-xs">⇅</span>
-  );
-
   return (
     <div className="">
       <div className="bg-white rounded-lg overflow-hidden">
@@ -101,22 +165,21 @@ const Page: React.FC = () => {
             {/* Date Inputs */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">From:</label>
-                <input
-                  type="date"
-                  value={fromDate ? fromDate.toISOString().split("T")[0] : ""}
-                  onChange={(e) => setFromDate(new Date(e.target.value))}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">From:</label>
+                <CustomDatePicker
+                  selectedDate={fromDate}
+                  onChange={setFromDate}
+                  placeholder="Select From Date"
                 />
               </div>
 
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">To:</label>
-                <input
-                  type="date"
-                  value={toDate ? toDate.toISOString().split("T")[0] : ""}
-                  onChange={(e) => setToDate(new Date(e.target.value))}
-                  className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">To:</label>
+                <CustomDatePicker
+                  selectedDate={toDate}
+                  onChange={setToDate}
+                  placeholder="Select To Date"
+                  minDate={fromDate} // prevent To date < From date
                 />
               </div>
             </div>
@@ -124,12 +187,12 @@ const Page: React.FC = () => {
             {/* Status Filter and Filter Button */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
               <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">
                   Status:
                 </label>
                 <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
                   <Listbox value={selectedStatus} onChange={setSelectedStatus}>
-                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-400 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
                       {selectedStatus}
                       <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
                     </ListboxButton>
@@ -148,7 +211,7 @@ const Page: React.FC = () => {
                 </div>
               </div>
 
-              <button className="px-4 sm:px-6 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
+              <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                 <ListFilterIcon size={14} />
                 <span className="hidden sm:inline">Filter</span>
               </button>
@@ -171,14 +234,14 @@ const Page: React.FC = () => {
 
             <div className="flex items-center gap-2 order-1 sm:order-2">
               <div className="relative w-full sm:w-auto">
-                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                   <Search size={16} />
                 </span>
                 <input
                   type="text"
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm w-full sm:min-w-[200px] focus:ring focus:ring-blue-200"
+                  className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm w-full sm:min-w-[200px] focus:ring focus:ring-blue-200 placeholder-gray-600"
                   placeholder="Search..."
                 />
               </div>
@@ -191,64 +254,64 @@ const Page: React.FC = () => {
           <table className="w-full border-1 min-w-[900px]">
             <thead>
               <tr>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-32">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       GUEST<br />NAME
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='guestName'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-40">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       BOOKING<br />NUMBER
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='bookingNumber'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       ROOM<br />NUMBER
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='roomNumber'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       ORIGINAL<br />AMOUNT
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='originalAmount'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                   <div className="flex justify-center gap-1 items-center">
                     <div className="leading-tight">
                       PAID<br />AMOUNT
                     </div>
-                    <SortIcon />
+                    <SortIcon sortKey='paidAmount'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                   <div className="flex justify-center gap-1 items-center">
                     <div>DATE</div>
-                    <SortIcon />
+                    <SortIcon sortKey='date'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-32">
+                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                   <div className="flex justify-center gap-1 items-center">
                     <div>NOTES</div>
-                    <SortIcon />
+                    <SortIcon sortKey='notes'/>
                   </div>
                 </th>
-                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                <th className="bg-gray-50 px-3 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                   ACTION
                 </th>
               </tr>
             </thead>
-            <tbody className='text-gray-600'>
+            <tbody className='text-gray-700'>
               {filteredRecords.length === 0 ? (
                 <tr>
                   <td colSpan={9} className="px-3 py-8 text-center text-gray-500">
@@ -256,7 +319,7 @@ const Page: React.FC = () => {
                   </td>
                 </tr>
               ) : (
-                filteredRecords.map((record) => {
+                sortedRecords.map((record) => {
                   return (
                     <tr key={record.id} className="hover:bg-gray-50">
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle">
@@ -281,17 +344,17 @@ const Page: React.FC = () => {
                         </div>
                       </td>
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                        {record.date}
+                        {record.date.toLocaleDateString()}
                       </td>
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle">
-                        <div className="truncate max-w-[150px]" title={record.notes}>
+                        <div className=" max-w-[150px]" title={record.notes}>
                           {record.notes}
                         </div>
                       </td>
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         <button
                           onClick={() => handlePaymentAction(record)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors"
+                          className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
                         >
                           <FileText size={16} className="text-gray-600" />
                         </button>

@@ -1,7 +1,9 @@
 "use client"
-import { Search, ChevronDown, ListFilterIcon, X, Printer } from 'lucide-react';
-import React, { useState } from 'react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import { Search, Printer, ListFilterIcon } from 'lucide-react';
+import React, { useMemo, useState } from 'react';
+import { Button } from '@/components/ui/button';
+import CustomDatePicker from '@/components/ui/customDatePicker';
+import RoomAssignmentModal from './RoomAssignmentModal'; // Adjust path as needed
 
 interface RoomData {
     id: string;
@@ -9,10 +11,15 @@ interface RoomData {
     bookingNumber: string;
     ratePlan: string;
     roomType: string;
-    arrivalDate: string;
-    departureDate: string;
+    arrivalDate: Date;
+    departureDate: Date;
     guestName: string;
     numberOfRooms: string;
+}
+
+interface SortConfig {
+    key: keyof RoomData | null;
+    direction: 'asc' | 'desc';
 }
 
 const Page: React.FC = () => {
@@ -23,6 +30,7 @@ const Page: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState('D1_1');
     const [currentBooking, setCurrentBooking] = useState<RoomData | null>(null);
+    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
     const roomSelectionOptions = [
         { value: 'D1_1', label: 'D1_1' },
@@ -30,32 +38,103 @@ const Page: React.FC = () => {
         { value: 'D1_3', label: 'D1_3' },
     ];
 
-    const bookings: RoomData[] = [
+    const roomAssign: RoomData[] = [
         {
             id: '1',
             roomNumber: 'DL-3',
             bookingNumber: 'MX120043-W2000011',
             ratePlan: 'RACK',
             roomType: 'D1',
-            arrivalDate: '27/08/2022',
-            departureDate: '28/08/2022',
+            arrivalDate: new Date("2022-08-27"),
+            departureDate: new Date("2022-08-28"),
             guestName: 'Marcovic Pou',
             numberOfRooms: '1 de: 1'
-        }
+        },
+        {
+            id: '2',
+            roomNumber: 'DL-5',
+            bookingNumber: 'MX120043-W2000011',
+            ratePlan: 'RACK',
+            roomType: 'D1',
+            arrivalDate: new Date("2022-08-28"),
+            departureDate: new Date("2022-08-29"),
+            guestName: 'Marcovic Pou',
+            numberOfRooms: '2 de: 1'
+        },
+        {
+            id: '3',
+            roomNumber: 'DL-4',
+            bookingNumber: 'MX120043-W2000011',
+            ratePlan: 'RACK',
+            roomType: 'D1',
+            arrivalDate: new Date("2022-08-27"),
+            departureDate: new Date("2022-08-28"),
+            guestName: 'Marcovic Pou',
+            numberOfRooms: '1 de: 1'
+        },
     ];
 
+    const filteredRoomAssign = useMemo(() => {
+        return roomAssign.filter(room =>
+            room.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            room.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            room.roomNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            room.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
+            room.roomType.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+    }, [searchTerm, roomAssign])
 
+    const sortedRoomAssign = useMemo(() => {
+        if (!sortConfig.key) return filteredRoomAssign;
 
-    // Search functionality - search across multiple fields
-    const filteredBookings = bookings.filter(booking =>
-        booking.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.roomNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.roomType.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        booking.arrivalDate.includes(searchTerm) ||
-        booking.departureDate.includes(searchTerm)
-    );
+        return [...filteredRoomAssign].sort((a, b) => {
+            const aValue = a[sortConfig.key!];
+            const bValue = b[sortConfig.key!];
+
+            let comparison = 0;
+
+            if (aValue instanceof Date && bValue instanceof Date) {
+                comparison = aValue.getTime() - bValue.getTime();
+            } else if (typeof aValue === 'number' && typeof bValue === 'number') {
+                comparison = aValue - bValue;
+            } else {
+                comparison = String(aValue).localeCompare(String(bValue));
+            }
+
+            return sortConfig.direction === 'asc' ? comparison : -comparison;
+        });
+    }, [filteredRoomAssign, sortConfig]);
+
+    const handleSort = (key: keyof RoomData) => {
+        let direction: 'asc' | 'desc' = 'asc';
+        if (sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc';
+        }
+
+        setSortConfig({ key, direction });
+    };
+
+    const SortIcon: React.FC<{ sortKey: keyof RoomData }> = ({ sortKey }) => {
+        const getSortIcon = () => {
+            if (sortConfig.key !== sortKey) {
+                return <span className=" text-gray-800 text-xs">⇅</span>;
+            }
+
+            return sortConfig.direction === 'asc'
+                ? <span className=" text-gray-800 text-xs">⇅</span>
+                : <span className=" text-gray-800 text-xs">⇅</span>;
+        };
+
+        return (
+            <button
+                onClick={() => handleSort(sortKey)}
+                className="hover:bg-gray-300 p-1 rounded transition-colors"
+                type="button"
+            >
+                {getSortIcon()}
+            </button>
+        );
+    };
 
     const handlePrint = (booking: RoomData) => {
         setCurrentBooking(booking);
@@ -72,10 +151,6 @@ const Page: React.FC = () => {
         handleCloseModal();
     };
 
-    const SortIcon: React.FC = () => (
-        <span className="ml-1 text-gray-400 text-xs">⇅</span>
-    );
-
     return (
         <div className="">
             <div className="bg-white rounded-lg overflow-hidden">
@@ -86,29 +161,28 @@ const Page: React.FC = () => {
                         {/* Date Inputs */}
                         <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">From:</label>
-                                <input
-                                    type="date"
-                                    value={fromDate ? fromDate.toISOString().split("T")[0] : ""}
-                                    onChange={(e) => setFromDate(new Date(e.target.value))}
-                                    className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">From:</label>
+                                <CustomDatePicker
+                                    selectedDate={fromDate}
+                                    onChange={setFromDate}
+                                    placeholder="Select From Date"
                                 />
                             </div>
 
                             <div className="flex flex-col sm:flex-row sm:items-center gap-2">
-                                <label className="font-normal text-gray-600 text-sm sm:text-base whitespace-nowrap">To:</label>
-                                <input
-                                    type="date"
-                                    value={toDate ? toDate.toISOString().split("T")[0] : ""}
-                                    onChange={(e) => setToDate(new Date(e.target.value))}
-                                    className="px-3 py-2 border border-gray-300 rounded-md text-sm bg-white w-full sm:min-w-[160px] lg:min-w-[200px] text-gray-600 focus:border-[#076DB3] focus:outline-none"
+                                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">To:</label>
+                                <CustomDatePicker
+                                    selectedDate={toDate}
+                                    onChange={setToDate}
+                                    placeholder="Select To Date"
+                                    minDate={fromDate} // prevent To date < From date
                                 />
                             </div>
                         </div>
 
                         {/* Filter Button */}
                         <div className="flex w-full sm:w-auto">
-                            <button className="px-4 sm:px-6 py-2 bg-white border border-gray-300 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none w-full sm:w-auto">
+                            <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none w-full sm:w-auto">
                                 <ListFilterIcon size={14} />
                                 <span className="hidden sm:inline">Filter</span>
                             </button>
@@ -128,14 +202,14 @@ const Page: React.FC = () => {
 
                         <div className="flex items-center gap-2 order-1 sm:order-2">
                             <div className="relative w-full sm:w-auto">
-                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-400">
+                                <span className="absolute inset-y-0 left-0 flex items-center pl-2 text-gray-600">
                                     <Search size={16} />
                                 </span>
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-8 pr-3 py-2 border border-gray-300 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200"
+                                    className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200 placeholder-gray-600"
                                     placeholder="Search..."
                                 />
                             </div>
@@ -148,116 +222,120 @@ const Page: React.FC = () => {
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             ROOM<br />NUMBER
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='roomNumber'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-28">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             BOOKING<br />NUMBER
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='bookingNumber'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             RATE<br />PLAN
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='ratePlan'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             ROOM<br />TYPE
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='roomType'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             ARRIVAL<br />DATE
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='arrivalDate'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             DEPARTURE<br />DATE
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='departureDate'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-24">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">GUEST NAME</div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='guestName'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-20">
+                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
                                     <div className="flex justify-center gap-1 items-center">
                                         <div className="leading-tight">
                                             NUMBER OF<br />ROOMS
                                         </div>
-                                        <SortIcon />
+                                        <SortIcon sortKey='numberOfRooms'/>
                                     </div>
                                 </th>
-                                <th className="bg-gray-50 px-2 py-3 text-left font-medium text-xs text-gray-400 uppercase tracking-wide border-b border-gray-200 w-16">
+                                <th className="bg-gray-50 px-2 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
                                     ACTION
                                 </th>
                             </tr>
                         </thead>
-                        <tbody className='text-gray-600'>
-                            {filteredBookings.length === 0 ? (
+                        <tbody className='text-gray-700'>
+                            {sortedRoomAssign.length === 0 ? (
                                 <tr>
                                     <td colSpan={9} className="px-3 py-8 text-center text-gray-500">
                                         No records found matching your search criteria.
                                     </td>
                                 </tr>
                             ) : (
-                                filteredBookings.map((booking) => (
-                                    <tr key={booking.id} className="hover:bg-gray-50">
+                                sortedRoomAssign.map((room) => (
+                                    <tr key={room.id} className="hover:bg-gray-50">
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.roomNumber}
+                                            {room.roomNumber}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.bookingNumber}
+                                            {room.bookingNumber}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center font-medium">
-                                            {booking.ratePlan}
+                                            {room.ratePlan}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.roomType}
+                                            {room.roomType}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.arrivalDate}
+                                            {room.arrivalDate.toLocaleDateString()}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.departureDate}
+                                            {room.departureDate.toLocaleDateString()}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.guestName}
+                                            {room.guestName}
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.numberOfRooms}
+                                            {room.numberOfRooms}
                                         </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            <button
-                                                onClick={() => handlePrint(booking)}
-                                                className="text-gray-600 hover:text-[#076DB3] transition-colors p-1 rounded"
-                                                title="Print"
-                                            >
-                                                <Printer className="w-4 h-4" />
-                                            </button>
-                                        </td>
+                                        
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs">
+                                        <div
+                                            className="flex items-center justify-center"
+                                        >
+                                            <Button variant="ghost" size="icon" className="h-4 w-4 p-0 cursor-pointer" asChild
+                                            onClick={() => handlePrint(room)}>
+                                                <span>
+                                                    <Printer size={14} />
+                                                </span>
+                                            </Button>
+                                        </div>
+                                    </td>
                                     </tr>
                                 ))
                             )}
@@ -265,80 +343,23 @@ const Page: React.FC = () => {
                     </table>
                 </div>
 
-                {/* Modal */}
-                {isModalOpen && (
-                    <div className="fixed inset-0 bg-[#0000005c] flex items-center justify-center z-50">
-                        <div className="bg-white rounded-lg shadow-xl w-96 max-w-[90vw] mx-4">
-                            {/* Modal Header */}
-                            <div className="flex items-center justify-between p-6 border-b border-gray-200">
-                                <h2 className="text-xl font-semibold text-gray-900">Select Room</h2>
-                                <button
-                                    onClick={handleCloseModal}
-                                    className="text-gray-400 hover:text-gray-600"
-                                >
-                                    <X className="w-6 h-6" />
-                                </button>
-                            </div>
-
-                            {/* Modal Body */}
-                            <div className="p-6">
-                                {/* Current Room Info */}
-                                <div className="bg-blue-50 rounded-lg p-4 mb-6 flex justify-between items-center">
-                                    <span className="text-gray-700 font-medium">Current Room</span>
-                                    <span className="text-gray-900 font-medium">
-                                        Room {currentBooking?.roomNumber}
-                                    </span>
-                                </div>
-
-                                {/* Room Selection Dropdown */}
-                                <div className="mb-6 relative">
-                                    <Listbox value={selectedRoom} onChange={setSelectedRoom}>
-                                        <ListboxButton className="w-full flex items-center justify-between px-3 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#076DB3] focus:border-[#076DB3] font-medium">
-                                            {roomSelectionOptions.find(option => option.value === selectedRoom)?.label || "Select Room"}
-                                            <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                                        </ListboxButton>
-
-                                        <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-lg shadow-lg z-10">
-                                            {roomSelectionOptions.map((option) => (
-                                                <ListboxOption
-                                                    key={option.value}
-                                                    value={option.value}
-                                                    className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-700 font-normal data-[focus]:bg-gray-100 data-[focus]:text-gray-700 data-[selected]:font-semibold"
-                                                >
-                                                    {option.label}
-                                                </ListboxOption>
-                                            ))}
-                                        </ListboxOptions>
-                                    </Listbox>
-                                </div>
-
-
-                                {/* Modal Actions */}
-                                <div className="flex gap-3">
-                                    <button
-                                        onClick={handleCloseModal}
-                                        className="flex-1 px-6 py-2 bg-gray-500 text-white rounded-lg hover:bg-gray-600 font-medium"
-                                    >
-                                        Close
-                                    </button>
-                                    <button
-                                        onClick={handleAccept}
-                                        className="flex-1 px-6 py-2 bg-[#076DB3] text-white rounded-lg hover:bg-[#054f80] font-medium"
-                                    >
-                                        Accept
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                )}
+                {/* Room Selection Modal */}
+                <RoomAssignmentModal
+                    isOpen={isModalOpen}
+                    onClose={handleCloseModal}
+                    onAccept={handleAccept}
+                    currentBooking={currentBooking}
+                    selectedRoom={selectedRoom}
+                    setSelectedRoom={setSelectedRoom}
+                    roomOptions={roomSelectionOptions}
+                />
 
             </div>
 
             {/* Pagination Section */}
             <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
                 <div className="text-gray-600 text-sm order-2 sm:order-1">
-                    Showing {filteredBookings.length > 0 ? 1 : 0} to {Math.min(10, filteredBookings.length)} of {filteredBookings.length} rows
+                    Showing {filteredRoomAssign.length > 0 ? 1 : 0} to {Math.min(10, filteredRoomAssign.length)} of {filteredRoomAssign.length} rows
                 </div>
 
                 <div className="flex items-center gap-1 sm:gap-2 order-1 sm:order-2 flex-wrap justify-center">
