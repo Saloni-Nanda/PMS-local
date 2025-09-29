@@ -1,22 +1,20 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { ScrollArea } from '@/components/ui/scroll-area'
 import {
-  Home,
   Calendar,
   Users,
   Bed,
   Wrench,
   CreditCard,
   LogOut,
-  ChevronLeft,
   CalendarCheck,
-  ChevronsLeftRightIcon
+  ChevronsLeftRightIcon,
 } from 'lucide-react'
 
 const navigation = [
@@ -26,8 +24,8 @@ const navigation = [
     icon: Calendar,
     children: [
       { name: 'Search', href: '/bookings/search' },
-      { name: 'New', href: '/bookings/new' }
-    ]
+      { name: 'New', href: '/bookings/new' },
+    ],
   },
   {
     name: 'Frontdesk',
@@ -42,21 +40,19 @@ const navigation = [
       { name: 'Check-in', href: '/frontdesk/check-in' },
       { name: 'Check-out', href: '/frontdesk/check-out' },
       { name: 'Account Receivable', href: '/frontdesk/account-receivable' },
-    ]
+    ],
   },
   {
     name: 'House Keeping',
     href: '/house-keeping/room-status',
     icon: Bed,
-    children: [
-      { name: 'Room Status', href: '/house-keeping/room-status' },
-    ]
+    children: [{ name: 'Room Status', href: '/house-keeping/room-status' }],
   },
   {
     name: 'Maintainance',
     href: '/maintainance',
     icon: Wrench,
-    children: []
+    children: [],
   },
   {
     name: 'Inventory',
@@ -65,7 +61,7 @@ const navigation = [
     children: [
       { name: 'Inventory Management', href: '/inventory/inventory-management' },
       { name: 'Check Inventory and Rates', href: '/inventory/check-inventory-rates' },
-    ]
+    ],
   },
   {
     name: 'Rates',
@@ -76,7 +72,7 @@ const navigation = [
       { name: 'Rate Relation', href: '/rates/rate-relation' },
       { name: 'Price Per Room', href: '/rates/price-per-room' },
       { name: 'Prices', href: '/rates/prices' },
-    ]
+    ],
   },
 ]
 
@@ -84,7 +80,24 @@ export function Sidebar() {
   const [collapsed, setCollapsed] = useState(false)
   const pathname = usePathname()
 
-  const themeColor = '#076DB3' // new theme color
+  const themeColor = '#076DB3'
+
+  // Collapse by default if screen < md (768px)
+  useEffect(() => {
+  const handleResize = () => {
+    if (window.innerWidth < 1000) {
+      setCollapsed(true) // collapse on small screens
+    } else {
+      setCollapsed(false) // open on medium+ screens
+    }
+  }
+
+  handleResize() // run on mount
+  window.addEventListener('resize', handleResize)
+
+  return () => window.removeEventListener('resize', handleResize)
+}, [])
+
 
   return (
     <div
@@ -93,15 +106,18 @@ export function Sidebar() {
         collapsed ? 'w-16' : 'w-64'
       )}
       style={{
-        backgroundColor: '#FFFFFF', // keep background white
-        borderColor: themeColor
+        backgroundColor: '#FFFFFF',
+        borderColor: themeColor,
       }}
     >
       {/* Header */}
-      <div className="flex items-center justify-between px-5 border-b flex-shrink-0 h-18" style={{ borderColor: themeColor }}>
+      <div
+        className="flex items-center justify-between px-5 border-b flex-shrink-0 h-18"
+        style={{ borderColor: themeColor }}
+      >
         {!collapsed && (
           <div className="flex items-center space-x-2 justify-center">
-            <img src="/logo.png" alt="" className='w-24 p-2'/>
+            <img src="/logo.png" alt="" className="w-24 p-2" />
           </div>
         )}
         <button
@@ -128,7 +144,10 @@ export function Sidebar() {
                 const isActive =
                   pathname === item.href ||
                   pathname.startsWith(item.href + '/') ||
-                  (item.children && pathname.startsWith(item.href.split('/')[1] ? `/${item.href.split('/')[1]}` : ''))
+                  (item.children &&
+                    pathname.startsWith(
+                      item.href.split('/')[1] ? `/${item.href.split('/')[1]}` : ''
+                    ))
 
                 return (
                   <div key={item.name}>
@@ -140,13 +159,16 @@ export function Sidebar() {
                           collapsed ? 'px-2' : 'px-3',
                           isActive ? 'shadow-sm' : ''
                         )}
-                        style={isActive
-                          ? { backgroundColor: '#E6F0FA', color: themeColor }
-                          : { color: '#2C3E50' }
+                        style={
+                          isActive
+                            ? { backgroundColor: '#E6F0FA', color: themeColor }
+                            : { color: '#2C3E50' }
                         }
                       >
                         <Icon className={cn('h-4 w-4', !collapsed && 'mr-3')} />
-                        {!collapsed && <span className="truncate">{item.name}</span>}
+                        {!collapsed && (
+                          <span className="truncate">{item.name}</span>
+                        )}
                       </Button>
                     </Link>
 
@@ -160,11 +182,14 @@ export function Sidebar() {
                               size="sm"
                               className={cn(
                                 'w-full justify-start text-sm transition-colors font',
-                                pathname === child.href ? 'font-medium' : 'hover:bg-opacity-10'
+                                pathname === child.href
+                                  ? 'font-medium'
+                                  : 'hover:bg-opacity-10'
                               )}
-                              style={pathname.startsWith(child.href)
-                                ? { fontWeight: 'bold', color: themeColor }
-                                : { color: '#2C3E50' }
+                              style={
+                                pathname.startsWith(child.href)
+                                  ? { fontWeight: 'bold', color: themeColor }
+                                  : { color: '#2C3E50' }
                               }
                             >
                               {child.name}
@@ -182,7 +207,10 @@ export function Sidebar() {
       </div>
 
       {/* Footer */}
-      <div className="p-3 border-t flex-shrink-0" style={{ borderColor: themeColor }}>
+      <div
+        className="p-3 border-t flex-shrink-0"
+        style={{ borderColor: themeColor }}
+      >
         <button
           className={cn(
             'w-full justify-start flex items-center p-2 rounded',

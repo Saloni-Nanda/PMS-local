@@ -285,7 +285,7 @@ const Page: React.FC = () => {
                                         <td className="px-3 py-3 text-xs">
                                             <div className="flex justify-center items-center">
                                                 <Link href={"/frontdesk/check-in/edit"}>
-                                                    <button className="text-[#076DB3] hover:text-[#054f80] cursor-pointer">
+                                                    <button className="h-5 w-5 text-black cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                         <EditIcon size={14} />
                                                     </button>
                                                 </Link>

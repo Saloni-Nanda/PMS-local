@@ -320,8 +320,8 @@ const Page: React.FC = () => {
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <Link href={"/maintainance/edit-maintainance"}>
-                                                <button className="text-gray-600 hover:text-blue-600 transition-colors cursor-pointer">
-                                                    <EditIcon size={16} />
+                                                <button className="h-5 w-5 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
+                                                    <EditIcon size={12} />
                                                 </button>
                                             </Link>
                                         </td>

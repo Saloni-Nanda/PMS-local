@@ -21,7 +21,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   className
 }) => {
   return (
-    <div className="relative w-full">
+    <div className="relative">
       <DatePicker
         selected={selectedDate}
         onChange={(date: Date | null) => {
@@ -32,9 +32,9 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
         dateFormat="yyyy-MM-dd"
         placeholderText={placeholder || "Select date"}
         minDate={minDate}
-        className={`px-2 py-2 border border-gray-400 rounded-md text-sm bg-white w-full text-gray-600 focus:border-[#076DB3] focus:outline-none ${className || ""}`}
+        className={`pl-10 py-2 border border-gray-400 rounded-md text-sm bg-white w-full text-gray-600 focus:border-[#076DB3] focus:outline-none ${className || ""}`}
       />
-      <Calendar className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
+      <Calendar className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 w-4 h-4 pointer-events-none" />
     </div>
   );
 };

@@ -308,57 +308,57 @@ const Page: React.FC = () => {
                             </tr>
                         </thead>
                         <tbody className='text-gray-700'>
-                             {filteredBookings.length === 0 ? (
+                            {filteredBookings.length === 0 ? (
                                 <tr>
                                     <td colSpan={8} className="px-3 py-8 text-center text-gray-500">
                                         No records found matching your search criteria.
                                     </td>
                                 </tr>
                             ) : (
-                            sortedBookings.map((booking) => (
-                                <tr key={booking.id} className="hover:bg-gray-50">
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.arrivalDate.toLocaleDateString()}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.reservationDate.toLocaleDateString()}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.bookingNumber}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.status}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.nights}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.guestName}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.specialRequests}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.total}<br />{booking.currency}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                        {booking.ratePlan}
-                                    </td>
-                                    <td className="px-2 py-3 border-b border-gray-100 text-xs">
-                                        <Link
-                                            href="/bookings/search/see"
-                                            className="flex items-center justify-center"
-                                        >
-                                            <Button variant="ghost" size="icon" className="h-4 w-4 p-0 hover:text-[#076DB3]" asChild>
-                                                <span>
-                                                    <Search size={14} />
-                                                </span>
+                                sortedBookings.map((booking) => (
+                                    <tr key={booking.id} className="hover:bg-gray-50">
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.arrivalDate.toLocaleDateString()}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.reservationDate.toLocaleDateString()}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.bookingNumber}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.status}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.nights}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.guestName}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.specialRequests}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.total}<br />{booking.currency}
+                                        </td>
+                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                            {booking.ratePlan}
+                                        </td>
+                                        <td className=" py-3 border-b border-gray-100 text-xs text-center">
+                                            <Button
+                                                variant="ghost"
+                                                size="icon"
+                                                className="h-5 w-5 bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center"
+                                                asChild
+                                            >
+                                                <Link href="/bookings/search/see">
+                                                    <Search size={16} />
+                                                </Link>
                                             </Button>
-                                        </Link>
-                                    </td>
-                                </tr>
-                            ))
-                        )}
+                                        </td>
+                                    </tr>
+                                ))
+                            )}
                         </tbody>
                     </table>
                 </div>
@@ -374,8 +374,8 @@ const Page: React.FC = () => {
                             disabled
                             className="px-2 sm:px-3 py-2 bg-white text-gray-400 rounded text-xs sm:text-sm cursor-not-allowed"
                         >
-                            <span className="hidden sm:inline">≪ First</span>
-                            <span className="sm:hidden">≪</span>
+                            <span className="hidden lg:inline">≪ First</span>
+                            <span className="lg:hidden">≪</span>
                         </button>
                         <button
                             disabled
@@ -396,8 +396,8 @@ const Page: React.FC = () => {
                             onClick={() => setCurrentPage(2)}
                             className="px-2 sm:px-3 py-2 bg-white text-gray-700 rounded text-xs sm:text-sm cursor-pointer hover:bg-gray-50"
                         >
-                            <span className="hidden sm:inline">Last ≫</span>
-                            <span className="sm:hidden">≫</span>
+                            <span className="hidden lg:inline">Last ≫</span>
+                            <span className="lg:hidden">≫</span>
                         </button>
                     </div>
                 </div>

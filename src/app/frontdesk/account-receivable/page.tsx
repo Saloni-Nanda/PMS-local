@@ -354,7 +354,7 @@ const Page: React.FC = () => {
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         <button
                           onClick={() => handlePaymentAction(record)}
-                          className="inline-flex items-center justify-center w-8 h-8 rounded-full hover:bg-gray-100 transition-colors cursor-pointer"
+                          className="inline-flex items-center justify-center w-6 h-6  cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors"
                         >
                           <FileText size={16} className="text-gray-600" />
                         </button>

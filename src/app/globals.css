@@ -114,7 +114,31 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
+  /* src/app/globals.css */
+
+  .react-datepicker {
+  font-size: 0.6rem !important;
+}
+
+.react-datepicker__day,
+.react-datepicker__day-name {
+  width: 1.2rem !important;
+  line-height: 1.5rem !important;
+  margin: 0.2rem !important;
+}
+
+.react-datepicker__current-month {
+  font-size: 0.8rem !important;
+}
+
+.react-datepicker__navigation {
+  top: 8px !important;
+}
+
+
 }

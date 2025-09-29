@@ -323,10 +323,10 @@ record.folioNr.toString().includes(searchTerm) ||
                                         </td>
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <div className="flex justify-center space-x-2">
-                                                <button className="text-gray-600 hover:text-[#076DB3] transition-colors cursor-pointer">
+                                                <button className="h-6 w-6 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                     <Search className="h-4 w-4" />
                                                 </button>
-                                                <button className="text-gray-600 hover:text-[#076DB3] transition-colors cursor-pointer">
+                                                <button className="h-6 w-6 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                     <Printer className="h-4 w-4" />
                                                 </button>
                                             </div>

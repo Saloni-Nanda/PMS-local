@@ -90,7 +90,7 @@ export default function Page() {
             <label className="block text-sm text-gray-600 mb-1">
               {label}
             </label>
-            <div className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 text-gray-900 text-sm">
+            <div className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 text-gray-900 text-sm truncate">
               {formData[name as keyof BookingFormData] || '-'}
             </div>
           </div>

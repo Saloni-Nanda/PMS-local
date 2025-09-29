@@ -273,13 +273,13 @@ const Page: React.FC = () => {
                                         </td>
                                         <td className=" py-3 border-b border-gray-100 text-xs ">
                                             <div className='flex items-center justify-center'>
-                                                <Button
-                                                    variant="ghost" size="icon" className="h-4 w-4 p-0 cursor-pointer" asChild
+                                                <button
+                                                     className="h-6 w-6 p-0 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center"
                                                     onClick={() => handlePrint(room)}
                                                     title="Print"
                                                 >
-                                                    <Printer className="h-4 w-4" />
-                                                </Button>
+                                                    <Printer size={16} />
+                                                </button>
                                             </div>
                                         </td>
                                     </tr>

@@ -12,8 +12,8 @@ import { AppBreadcrumb } from '@/components/layout/breadCrumb'
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
-    title: 'HotelStar Management System',
-    description: 'Hotel management and booking system',
+    title: 'PMS',
+   // description: 'Hotel management and booking system',
 }
 
 export default function RootLayout({
@@ -43,8 +43,6 @@ export default function RootLayout({
                             <div className="bg-white shadow-sm px-6 py-2">
                                 <AppBreadcrumb />
                             </div>
-
-
 
                             {/* Page Content */}
                             <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">

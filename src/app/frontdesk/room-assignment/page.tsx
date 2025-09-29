@@ -328,7 +328,7 @@ const Page: React.FC = () => {
                                         <div
                                             className="flex items-center justify-center"
                                         >
-                                            <Button variant="ghost" size="icon" className="h-4 w-4 p-0 cursor-pointer" asChild
+                                            <Button variant="ghost" size="icon" className="h-6 w-6 p-0 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center" asChild
                                             onClick={() => handlePrint(room)}>
                                                 <span>
                                                     <Printer size={14} />
