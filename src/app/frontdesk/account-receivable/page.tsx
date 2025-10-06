@@ -1,8 +1,9 @@
 "use client"
-import { Search, ChevronDown, ListFilterIcon, FileText, X } from 'lucide-react';
+import { Search, ChevronDown, ListFilterIcon, FileText } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import CustomDatePicker from '@/components/ui/customDatePicker';
+import PaymentModal from './PaymentModal';
 
 interface AccountReceivableData {
   id: number;
@@ -26,18 +27,10 @@ const Page: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
 
   const statusOptions = ["All", "Unpaid", "Partially Paid", "Paid"];
-  const paymentTypes = ["Advance Payment", "Full Payment", "Partial Payment"];
-  const currencies = ["MXN (Mexican Peso)", "USD (US Dollar)", "EUR (Euro)"]
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [selectedRecord, setSelectedRecord] = useState<AccountReceivableData | null>(null);
-
-  const [paymentData, setPaymentData] = useState({
-    type: paymentTypes[0],
-    currency: currencies[0],
-    amount: '15.00'
-  });
 
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
@@ -73,12 +66,6 @@ const Page: React.FC = () => {
       notes: "carlos.martinez@email.com"
     }
   ];
-
-  // Filter records based on search term and status
-  // const filteredRecords = accountsReceivables.filter(record =>
-  //   record.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-  //   record.bookingNumber.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
 
   const filteredRecords = useMemo(() => {
     return accountsReceivables.filter(record =>
@@ -179,7 +166,7 @@ const Page: React.FC = () => {
                   selectedDate={toDate}
                   onChange={setToDate}
                   placeholder="Select To Date"
-                  minDate={fromDate} // prevent To date < From date
+                  minDate={fromDate}
                 />
               </div>
             </div>
@@ -213,7 +200,7 @@ const Page: React.FC = () => {
 
               <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                 <ListFilterIcon size={14} />
-                <span className="hidden sm:inline">Filter</span>
+                <span className="">Filter</span>
               </button>
             </div>
           </div>
@@ -259,7 +246,7 @@ const Page: React.FC = () => {
                     <div className="leading-tight">
                       GUEST<br />NAME
                     </div>
-                    <SortIcon sortKey='guestName'/>
+                    <SortIcon sortKey='guestName' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
@@ -267,7 +254,7 @@ const Page: React.FC = () => {
                     <div className="leading-tight">
                       BOOKING<br />NUMBER
                     </div>
-                    <SortIcon sortKey='bookingNumber'/>
+                    <SortIcon sortKey='bookingNumber' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
@@ -275,7 +262,7 @@ const Page: React.FC = () => {
                     <div className="leading-tight">
                       ROOM<br />NUMBER
                     </div>
-                    <SortIcon sortKey='roomNumber'/>
+                    <SortIcon sortKey='roomNumber' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
@@ -283,7 +270,7 @@ const Page: React.FC = () => {
                     <div className="leading-tight">
                       ORIGINAL<br />AMOUNT
                     </div>
-                    <SortIcon sortKey='originalAmount'/>
+                    <SortIcon sortKey='originalAmount' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
@@ -291,19 +278,19 @@ const Page: React.FC = () => {
                     <div className="leading-tight">
                       PAID<br />AMOUNT
                     </div>
-                    <SortIcon sortKey='paidAmount'/>
+                    <SortIcon sortKey='paidAmount' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
                   <div className="flex justify-center gap-1 items-center">
                     <div>DATE</div>
-                    <SortIcon sortKey='date'/>
+                    <SortIcon sortKey='date' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
                   <div className="flex justify-center gap-1 items-center">
                     <div>NOTES</div>
-                    <SortIcon sortKey='notes'/>
+                    <SortIcon sortKey='notes' />
                   </div>
                 </th>
                 <th className="bg-gray-50 px-3 py-3 text-center font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
@@ -322,10 +309,10 @@ const Page: React.FC = () => {
                 sortedRecords.map((record) => {
                   return (
                     <tr key={record.id} className="hover:bg-gray-50">
-                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle">
+                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         <div className="truncate">{record.guestName}</div>
                       </td>
-                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle">
+                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         <div className="truncate">{record.bookingNumber}</div>
                       </td>
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
@@ -346,7 +333,7 @@ const Page: React.FC = () => {
                       <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         {record.date.toLocaleDateString()}
                       </td>
-                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle">
+                      <td className="px-3 py-3 border-b border-gray-100 text-xs align-middle text-center">
                         <div className=" max-w-[150px]" title={record.notes}>
                           {record.notes}
                         </div>
@@ -368,98 +355,12 @@ const Page: React.FC = () => {
         </div>
 
         {/* Payment Modal */}
-        {isPaymentModalOpen && selectedRecord && (
-          <div className="fixed inset-0 bg-[#00000055] flex items-center justify-center z-50 p-2">
-            <div className="bg-white rounded-lg p-4 w-full max-w-md mx-2 relative space-y-4">
-              <button
-                onClick={handleCloseModal}
-                className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-              >
-                <X className="w-5 h-5" />
-              </button>
-
-              <h2 className="text-lg font-semibold text-center text-gray-800">Add Payment</h2>
-
-              {/* Payment Type Listbox */}
-              <h2 className="text-sm font-normal text-gray-800">Add Payment</h2>
-              <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
-                <Listbox
-                  value={paymentData.type}
-                  onChange={(val) => setPaymentData({ ...paymentData, type: val })}
-                >
-                  <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                    {paymentData.type}
-                    <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                  </ListboxButton>
-                  <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                    {paymentTypes.map((type) => (
-                      <ListboxOption
-                        key={type}
-                        value={type}
-                        className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                      >
-                        {type}
-                      </ListboxOption>
-                    ))}
-                  </ListboxOptions>
-                </Listbox>
-              </div>
-
-              {/* Currency Listbox */}
-              <h2 className="text-sm font-normal text-gray-800">Currency</h2>
-              <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
-                <Listbox
-                  value={paymentData.currency}
-                  onChange={(val) => setPaymentData({ ...paymentData, currency: val })}
-                >
-                  <Listbox.Button className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                    {paymentData.currency}
-                    <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                  </Listbox.Button>
-                  <Listbox.Options className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                    {currencies.map((currency) => (
-                      <Listbox.Option
-                        key={currency}
-                        value={currency.split(" ")[0]}
-                        className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                      >
-                        {currency}
-                      </Listbox.Option>
-                    ))}
-                  </Listbox.Options>
-                </Listbox>
-              </div>
-
-              {/* Amount Input */}
-              <h2 className="text-sm font-normal text-gray-800">Amount</h2>
-              <div className="col-span-1 sm:col-span-2">
-                <input
-                  type="number"
-                  step="0.01"
-                  value={paymentData.amount}
-                  onChange={(e) => setPaymentData({ ...paymentData, amount: e.target.value })}
-                  placeholder="Amount"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                />
-              </div>
-
-              <div className="flex gap-3 mt-2">
-                <button
-                  onClick={handleCloseModal}
-                  className="flex-1 px-3 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-md text-sm transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAcceptPayment}
-                  className="flex-1 px-3 py-2 bg-[#076DB3] hover:bg-[#054f80] text-white rounded-md text-sm transition-colors"
-                >
-                  Accept
-                </button>
-              </div>
-            </div>
-          </div>
-        )}
+        <PaymentModal
+          isOpen={isPaymentModalOpen}
+          selectedRecord={selectedRecord}
+          onClose={handleCloseModal}
+          onAccept={handleAcceptPayment}
+        />
 
         {/* Pagination Section */}
         <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">

@@ -336,11 +336,11 @@ const Page: React.FC = () => {
                                         <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
                                             <div className="flex justify-center gap-2">
                                                 <Link href="/rates/rate-plan/edit">
-                                                    <button className="text-blue-600 hover:text-blue-800 transition-colors cursor-pointer">
+                                                    <button className="h-5 w-5 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                         <EditIcon size={12} />
                                                     </button>
                                                 </Link>
-                                                <button className="text-red-600 hover:text-red-800 transition-colors mb-1 cursor-pointer">
+                                                <button className="h-5 w-5 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                     <Trash2 size={12} />
                                                 </button>
                                             </div>

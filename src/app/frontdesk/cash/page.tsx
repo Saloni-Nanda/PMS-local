@@ -3,29 +3,14 @@ import CustomDatePicker from '@/components/ui/customDatePicker';
 import { Search, ListFilterIcon } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
-interface CashPaymentData {
-    date: Date;
-    time: string;
-    paymentType: string;
-    amount: number;
-    card: string;
-    description: string;
-    reference: string;
-    idNr: number;
-    user: string;
-}
-
-interface SortConfig {
-    key: keyof CashPaymentData | null;
-    direction: 'asc' | 'desc';
-}
+import { CashPaymentData, SortConfig } from '@/types';
 
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
     const [currentPage, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState<SortConfig<CashPaymentData>>({ key: null, direction: 'asc' });
 
     const cashPayments: CashPaymentData[] = [
         {
@@ -140,7 +125,7 @@ const Page: React.FC = () => {
         <div className="">
             <div className="bg-white rounded-lg overflow-hidden">
                 {/* Header Section */}
-                <div className="p-3 sm:p-4 lg:p-5 border-b border-gray-200">
+                <div className="p-1 sm:p-2 lg:p-5 border-b border-gray-200">
                     {/* Filter Row */}
                     <div className="flex flex-col sm:flex-row sm:flex-wrap items-stretch sm:items-center gap-3 sm:gap-4 mb-4 sm:mb-5">
                         {/* Date Inputs */}
@@ -169,14 +154,14 @@ const Page: React.FC = () => {
                         <div className="flex w-full sm:w-auto">
                             <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none w-full sm:w-auto">
                                 <ListFilterIcon size={14} />
-                                <span className="hidden sm:inline">Filter</span>
+                                <span className="">Filter</span>
                             </button>
                         </div>
                     </div>
 
                     {/* Export and Search Row */}
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-                        <div className="flex flex-col sm:flex-row gap-2 order-2 sm:order-1">
+                        <div className="flex flex-col lg:flex-row gap-2 order-2 sm:order-1">
                             <button className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer">
                                 Export Excel
                             </button>
@@ -194,7 +179,7 @@ const Page: React.FC = () => {
                                     type="text"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
-                                    className="pl-8 pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200 placeholder-gray-600"
+                                    className="w-full sm:w-[220px] pl-8  pr-3 py-2 border border-gray-400 rounded-md text-sm min-w-[200px] focus:ring focus:ring-blue-200 placeholder-gray-600"
                                     placeholder="Search..."
                                 />
                             </div>
@@ -318,15 +303,15 @@ const Page: React.FC = () => {
                             disabled
                             className="px-2 sm:px-3 py-2 bg-white text-gray-400 rounded text-xs sm:text-sm cursor-not-allowed"
                         >
-                            <span className="hidden sm:inline">≪ First</span>
-                            <span className="sm:hidden">≪</span>
+                            <span className="hidden lg:inline">≪ First</span>
+                            <span className="lg:hidden">First</span>
                         </button>
                         <button
                             disabled
                             className="px-2 sm:px-3 py-2 bg-white text-gray-400 rounded text-xs sm:text-sm cursor-not-allowed"
                         >
-                            <span className="hidden sm:inline">Previous</span>
-                            <span className="sm:hidden">‹</span>
+                            <span className="hidden lg:inline">Previous</span>
+                            <span className="lg:hidden">‹</span>
                         </button>
                         <button className="px-2 sm:px-3 py-1 border-b-2 border-[#076DB3] bg-white text-[#076DB3] rounded text-xs sm:text-sm">
                             1
@@ -335,15 +320,15 @@ const Page: React.FC = () => {
                             onClick={() => setCurrentPage(2)}
                             className="px-2 sm:px-3 py-2 bg-white text-gray-700 rounded text-xs sm:text-sm cursor-pointer hover:bg-gray-50"
                         >
-                            <span className="hidden sm:inline">Next</span>
-                            <span className="sm:hidden">›</span>
+                            <span className="hidden lg:inline">Next</span>
+                            <span className="lg:hidden">›</span>
                         </button>
                         <button
                             onClick={() => setCurrentPage(2)}
                             className="px-2 sm:px-3 py-2 bg-white text-gray-700 rounded text-xs sm:text-sm cursor-pointer hover:bg-gray-50"
                         >
-                            <span className="hidden sm:inline">Last ≫</span>
-                            <span className="sm:hidden">≫</span>
+                            <span className="hidden lg:inline">Last ≫</span>
+                            <span className="lg:hidden">Last</span>
                         </button>
                     </div>
                 </div>

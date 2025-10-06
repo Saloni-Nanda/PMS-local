@@ -2,17 +2,8 @@ import React from 'react';
 import { ChevronDown, X } from 'lucide-react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 
-interface RoomData {
-    id: string;
-    roomNumber: string;
-    bookingNumber: string;
-    ratePlan: string;
-    roomType: string;
-    arrivalDate: Date;
-    departureDate: Date;
-    guestName: string;
-    numberOfRooms: string;
-}
+import { RoomData } from '@/types';
+import { CustomListbox } from '@/components/ui/Listbox';
 
 interface RoomAssignmentModalProps {
     isOpen: boolean;
@@ -21,7 +12,7 @@ interface RoomAssignmentModalProps {
     currentBooking: RoomData | null;
     selectedRoom: string;
     setSelectedRoom: (room: string) => void;
-    roomOptions: Array<{ value: string; label: string }>;
+    roomOptions: string[];
 }
 
 const RoomAssignmentModal: React.FC<RoomAssignmentModalProps> = ({
@@ -61,24 +52,12 @@ const RoomAssignmentModal: React.FC<RoomAssignmentModalProps> = ({
 
                     {/* Room Selection Dropdown */}
                     <div className="mb-6 relative">
-                        <Listbox value={selectedRoom} onChange={setSelectedRoom}>
-                            <ListboxButton className="w-full flex items-center justify-between px-3 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#076DB3] focus:border-[#076DB3] font-medium">
-                                {roomOptions.find(option => option.value === selectedRoom)?.label || "Select Room"}
-                                <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                            </ListboxButton>
-
-                            <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] rounded-lg shadow-lg z-10">
-                                {roomOptions.map((option) => (
-                                    <ListboxOption
-                                        key={option.value}
-                                        value={option.value}
-                                        className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-700 font-normal data-[focus]:bg-gray-100 data-[focus]:text-gray-700 data-[selected]:font-semibold"
-                                    >
-                                        {option.label}
-                                    </ListboxOption>
-                                ))}
-                            </ListboxOptions>
-                        </Listbox>
+                        <CustomListbox
+                            label=""
+                            value={selectedRoom}
+                            onChange={setSelectedRoom}
+                            options={roomOptions}
+                        />
                     </div>
 
                     {/* Modal Actions */}

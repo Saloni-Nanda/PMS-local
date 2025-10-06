@@ -1,16 +1,9 @@
 import React from 'react';
-import { ChevronDown, X } from 'lucide-react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import {  X } from 'lucide-react';
+//import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
+import { CustomListbox } from '@/components/ui/Listbox';
 
-interface RoomChangeData {
-    roomNumber: string;
-    folioNr: string;
-    bookingNumber: string;
-    roomType: string;
-    arrivalDate: Date;
-    departureDate: Date;
-    guestName: string;
-}
+import { RoomChangeData } from '@/types';
 
 interface RoomChangeModalProps {
     isOpen: boolean;
@@ -112,120 +105,42 @@ const RoomChangeModal: React.FC<RoomChangeModalProps> = ({
                     {/* Form Fields */}
                     <div className="space-y-4">
                         {/* Room Type */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Room Type
-                            </label>
-                            <Listbox
-                                value={roomForm.roomType}
-                                onChange={(val) => setRoomForm({ ...roomForm, roomType: val })}
-                            >
-                                <div className="relative w-full">
-                                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-700">
-                                        {roomForm.roomType || "Select"}
-                                        <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 bg-white border border-[#076DB3] rounded-md shadow-lg z-10 w-full">
-                                        {roomTypeOptions.map((option) => (
-                                            <ListboxOption
-                                                key={option}
-                                                value={option}
-                                                className="px-3 py-2 cursor-pointer text-sm text-gray-700 data-[focus]:bg-gray-100"
-                                            >
-                                                {option}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </div>
-                            </Listbox>
-                        </div>
+                        <CustomListbox
+                            label="Room Type"
+                            value={roomForm.roomType}
+                            onChange={(val) => setRoomForm({ ...roomForm, roomType: val })}
+                            options={roomTypeOptions}
+                            placeholder={roomTypeOptions[0]}
+                        />
 
                         {/* Room Number */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Room Number
-                            </label>
-                            <Listbox
-                                value={roomForm.roomNumber}
-                                onChange={(val) => setRoomForm({ ...roomForm, roomNumber: val })}
-                            >
-                                <div className="relative w-full">
-                                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-700">
-                                        {roomForm.roomNumber || "Select"}
-                                        <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 bg-white border border-[#076DB3] rounded-md shadow-lg z-10 w-full">
-                                        {roomNumberOptions.map((option) => (
-                                            <ListboxOption
-                                                key={option}
-                                                value={option}
-                                                className="px-3 py-2 cursor-pointer text-sm text-gray-700 data-[focus]:bg-gray-100"
-                                            >
-                                                {option}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </div>
-                            </Listbox>
-                        </div>
+                        <CustomListbox
+                            label="Room Number"
+                            value={roomForm.roomNumber}
+                            onChange={(val) => setRoomForm({ ...roomForm, roomNumber: val })}
+                            options={roomNumberOptions}
+                            placeholder={roomNumberOptions[0]}
+                        />
+
 
                         {/* Rate */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Rate
-                            </label>
-                            <Listbox
-                                value={roomForm.rate}
-                                onChange={(val) => setRoomForm({ ...roomForm, rate: val })}
-                            >
-                                <div className="relative w-full">
-                                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-700">
-                                        {roomForm.rate || "Select"}
-                                        <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 bg-white border border-[#076DB3] rounded-md shadow-lg z-10 w-full">
-                                        {rateOptions.map((option) => (
-                                            <ListboxOption
-                                                key={option}
-                                                value={option}
-                                                className="px-3 py-2 cursor-pointer text-sm text-gray-700 data-[focus]:bg-gray-100"
-                                            >
-                                                {option} MXN
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </div>
-                            </Listbox>
-                        </div>
+                        <CustomListbox
+                            label="Rate"
+                            value={roomForm.rate}
+                            onChange={(val) => setRoomForm({ ...roomForm, rate: val })}
+                            options={rateOptions}
+                            placeholder={rateOptions[0]}
+                        />
 
                         {/* Total Charge */}
-                        <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-2">
-                                Total Charge
-                            </label>
-                            <Listbox
-                                value={roomForm.totalCharge}
-                                onChange={(val) => setRoomForm({ ...roomForm, totalCharge: val })}
-                            >
-                                <div className="relative w-full">
-                                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-700">
-                                        {roomForm.totalCharge || "Select"}
-                                        <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 bg-white border border-[#076DB3] rounded-md shadow-lg z-10 w-full">
-                                        {totalChargeOptions.map((option) => (
-                                            <ListboxOption
-                                                key={option}
-                                                value={option}
-                                                className="px-3 py-2 cursor-pointer text-sm text-gray-700 data-[focus]:bg-gray-100"
-                                            >
-                                                {option} MXN
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </div>
-                            </Listbox>
-                        </div>
+                        <CustomListbox
+                            label="Total Charge"
+                            value={roomForm.totalCharge}
+                            onChange={(val) => setRoomForm({ ...roomForm, totalCharge: val })}
+                            options={totalChargeOptions}
+                            placeholder={totalChargeOptions[0]}
+                        />
+
                     </div>
                 </div>
 

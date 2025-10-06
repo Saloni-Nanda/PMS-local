@@ -30,8 +30,8 @@ const Page = () => {
   ]);
 
   return (
-    <div className="flex px-6 bg-gray-50 min-h-screen">
-      <div className="bg-white p-4 sm:p-6 rounded-md w-full max-w-4xl">
+    <div className="flex  bg-gray-50 min-h-screen">
+      <div className="bg-white p-1 sm:p-2 lg:p-4 rounded-md w-full max-w-4xl">
         <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Payment Info</h2>
 
         <div className="space-y-4">

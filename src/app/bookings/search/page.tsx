@@ -1,5 +1,5 @@
 "use client"
-import { Search, ChevronDown, Filter } from 'lucide-react';
+import { Search, ChevronDown, Filter, ListFilterIcon } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
@@ -197,7 +197,7 @@ const Page: React.FC = () => {
                             </div>
 
                             <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
-                                <Filter size={14} />
+                                <ListFilterIcon size={14} />
                                 <span>Filter</span>
                             </button>
                         </div>
@@ -205,7 +205,7 @@ const Page: React.FC = () => {
 
                     {/* Export and Search Row */}
                     <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-                        <div className="flex flex-col sm:flex-row gap-2 order-2 sm:order-1">
+                        <div className="flex flex-col lg:flex-row gap-2 order-2 sm:order-1">
                             <button className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer">
                                 Export Excel
                             </button>
@@ -364,24 +364,25 @@ const Page: React.FC = () => {
                 </div>
 
                 {/* Pagination Section */}
-                <div className="py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
-                    <div className="text-gray-600 text-sm order-2 sm:order-1 pl-2">
-                        Showing 1 to {sortedBookings.length} of {sortedBookings.length} rows
+                 <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
+                    <div className="text-gray-600 text-sm order-2 sm:order-1">
+                        Showing {filteredBookings.length > 0 ? 1 : 0} to {Math.min(10, filteredBookings.length)} of {filteredBookings.length} rows
                     </div>
 
-                    <div className="flex items-center gap-1 order-1 sm:order-2 flex-wrap justify-center">
+                    <div className="flex items-center gap-1 sm:gap-2 order-1 sm:order-2 flex-wrap justify-center">
                         <button
                             disabled
                             className="px-2 sm:px-3 py-2 bg-white text-gray-400 rounded text-xs sm:text-sm cursor-not-allowed"
                         >
                             <span className="hidden lg:inline">≪ First</span>
-                            <span className="lg:hidden">≪</span>
+                            <span className="lg:hidden">First</span>
                         </button>
                         <button
                             disabled
                             className="px-2 sm:px-3 py-2 bg-white text-gray-400 rounded text-xs sm:text-sm cursor-not-allowed"
                         >
-                            <span>Previous</span>
+                            <span className="hidden lg:inline">Previous</span>
+                            <span className="lg:hidden">‹</span>
                         </button>
                         <button className="px-2 sm:px-3 py-1 border-b-2 border-[#076DB3] bg-white text-[#076DB3] rounded text-xs sm:text-sm">
                             1
@@ -390,14 +391,15 @@ const Page: React.FC = () => {
                             onClick={() => setCurrentPage(2)}
                             className="px-2 sm:px-3 py-2 bg-white text-gray-700 rounded text-xs sm:text-sm cursor-pointer hover:bg-gray-50"
                         >
-                            <span>Next</span>
+                            <span className="hidden lg:inline">Next</span>
+                            <span className="lg:hidden">›</span>
                         </button>
                         <button
                             onClick={() => setCurrentPage(2)}
                             className="px-2 sm:px-3 py-2 bg-white text-gray-700 rounded text-xs sm:text-sm cursor-pointer hover:bg-gray-50"
                         >
                             <span className="hidden lg:inline">Last ≫</span>
-                            <span className="lg:hidden">≫</span>
+                            <span className="lg:hidden">Last</span>
                         </button>
                     </div>
                 </div>

@@ -60,7 +60,7 @@ export default function Page() {
         Booking Info
       </h2>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {[
           { label: "Booking Number", name: "bookingNumber" },
           { label: "Full Name", name: "fullName" },

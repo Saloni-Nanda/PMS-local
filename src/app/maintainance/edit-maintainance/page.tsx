@@ -1,8 +1,7 @@
 "use client"
-import { ChevronDown } from 'lucide-react';
 import React, { useState } from 'react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import { useRouter } from "next/navigation";
+import { CustomListbox } from '@/components/ui/Listbox';
 
 const Page: React.FC = () => {
   // Form state
@@ -29,83 +28,38 @@ const Page: React.FC = () => {
   };
 
   return (
-    <div className="bg-white rounded-lg p-6 max-w-4xl mx-auto">
-      <h2 className="text-xl font-semibold text-gray-800 mb-6">Update Maintenance Status</h2>
-      
+    <div className="bg-white rounded-lg p-1 max-w-4xl mx-auto">
+      <h2 className="text-xl sm:text-3xl font-extrabold tracking-wide
+    text-[#076DB3] mb-6 relative inline-block
+    after:content-[''] after:block  after:h-[3px]
+    after:bg-[#076DB3] after:mt-2 after:mr-5 after:rounded-lg">Update Maintenance Status</h2>
+
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Left Column */}
         <div className="space-y-4">
           {/* Room Number */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">Room Number</label>
-            <Listbox value={roomNumber} onChange={setRoomNumber}>
-              <div className="relative">
-                <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                  {roomNumber}
-                  <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                </ListboxButton>
-                <ListboxOptions className="absolute py-2 mt-1 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                  {roomNumbers.map((room) => (
-                    <ListboxOption
-                      key={room}
-                      value={room}
-                      className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                    >
-                      {room}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </div>
+          <CustomListbox
+            label="Room Number"
+            value={roomNumber}
+            onChange={setRoomNumber}
+            options={roomNumbers}
+          />
 
           {/* Cause/Reason */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">Cause/Reason</label>
-            <Listbox value={causeReason} onChange={setCauseReason}>
-              <div className="relative">
-                <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                  {causeReason}
-                  <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                </ListboxButton>
-                <ListboxOptions className="absolute py-2 mt-1 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                  {causeReasonOptions.map((cause) => (
-                    <ListboxOption
-                      key={cause}
-                      value={cause}
-                      className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                    >
-                      {cause}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </div>
+          <CustomListbox
+            label="Cause/Reason"
+            value={causeReason}
+            onChange={setCauseReason}
+            options={causeReasonOptions}
+          />
 
           {/* Status After Maintenance */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">Status After Maintenance</label>
-            <Listbox value={statusAfterMaintenance} onChange={setStatusAfterMaintenance}>
-              <div className="relative">
-                <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                  {statusAfterMaintenance}
-                  <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                </ListboxButton>
-                <ListboxOptions className="absolute py-2 mt-1 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                  {statusOptions.map((status) => (
-                    <ListboxOption
-                      key={status}
-                      value={status}
-                      className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                    >
-                      {status}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </div>
+          <CustomListbox
+            label="Status After Maintenance"
+            value={statusAfterMaintenance}
+            onChange={setStatusAfterMaintenance}
+            options={statusOptions}
+          />
 
           {/* Notes */}
           <div>
@@ -123,52 +77,20 @@ const Page: React.FC = () => {
         {/* Right Column */}
         <div className="space-y-4">
           {/* Assigned To */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">Assigned To</label>
-            <Listbox value={assignedTo} onChange={setAssignedTo}>
-              <div className="relative">
-                <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                  {assignedTo}
-                  <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                </ListboxButton>
-                <ListboxOptions className="absolute py-2 mt-1 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                  {assignedToOptions.map((person) => (
-                    <ListboxOption
-                      key={person}
-                      value={person}
-                      className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                    >
-                      {person}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </div>
+          <CustomListbox
+            label="Assigned To"
+            value={assignedTo}
+            onChange={setAssignedTo}
+            options={assignedToOptions}
+          />
 
           {/* Priority */}
-          <div>
-            <label className="block text-sm text-gray-600 mb-2">Priority</label>
-            <Listbox value={priority} onChange={setPriority}>
-              <div className="relative">
-                <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-300 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                  {priority}
-                  <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
-                </ListboxButton>
-                <ListboxOptions className="absolute py-2 mt-1 w-full bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
-                  {priorityOptions.map((priorityOption) => (
-                    <ListboxOption
-                      key={priorityOption}
-                      value={priorityOption}
-                      className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
-                    >
-                      {priorityOption}
-                    </ListboxOption>
-                  ))}
-                </ListboxOptions>
-              </div>
-            </Listbox>
-          </div>
+          <CustomListbox
+            label="Priority"
+            value={priority}
+            onChange={setPriority}
+            options={priorityOptions}
+          />
 
           {/* Nights */}
           <div>
@@ -186,16 +108,14 @@ const Page: React.FC = () => {
           <div>
             <label className="block text-sm text-gray-600 mb-2">Out of Order</label>
             <div className="flex items-center">
-              <div 
+              <div
                 onClick={() => setOutOfOrder(!outOfOrder)}
-                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${
-                  outOfOrder ? 'bg-[#076DB3]' : 'bg-gray-200'
-                }`}
+                className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors cursor-pointer ${outOfOrder ? 'bg-[#076DB3]' : 'bg-gray-200'
+                  }`}
               >
                 <span
-                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                    outOfOrder ? 'translate-x-6' : 'translate-x-1'
-                  }`}
+                  className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${outOfOrder ? 'translate-x-6' : 'translate-x-1'
+                    }`}
                 />
               </div>
               <span className="ml-3 text-sm text-gray-600">
@@ -207,10 +127,10 @@ const Page: React.FC = () => {
       </div>
 
       {/* Action Buttons */}
-      <div className="flex gap-4 mt-8 pt-6 border-t border-gray-200">
+      <div className="flex flex-col md:flex-row gap-4 mt-8 pt-6 border-t border-gray-200">
         <button
           onClick={() => handleSubmit('Maintenance Completed')}
-          className="px-6 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer transition-colors"
+          className="px-2 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer transition-colors"
         >
           Maintenance Completed
         </button>

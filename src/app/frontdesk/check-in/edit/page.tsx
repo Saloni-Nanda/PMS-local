@@ -26,7 +26,7 @@ const RoomSelectionStep: React.FC<Pick<StepProps, 'onNext'>> = ({ onNext }) => {
         <div className="space-y-6">
             <RoomSelection />
             <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer w-full sm:w-auto'>
                     Go to Payments
                 </Button>
             </div>
@@ -40,7 +40,7 @@ const PaymentStep: React.FC<StepProps> = ({ onNext }) => {
         <div className="space-y-6">
             <Payments/>
             <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer w-full sm:w-auto'>
                     Save and go to Guest Info
                 </Button>
             </div>
@@ -53,8 +53,8 @@ const GuestInfoStep: React.FC<StepProps> = ({ onNext }) => {
     return (
         <div className="space-y-6">
             <GuestInfo/>
-            <div className="flex justify-start">
-                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer'>
+            <div className="flex justify-start ">
+                <Button onClick={onNext} className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer w-full md:w-auto'>
                     Save and go to Confirmation
                 </Button>
             </div>
@@ -73,13 +73,13 @@ const ConfirmationStep: React.FC<Pick<StepProps, 'onBack'>> = ({ onBack }) => {
     return (
         <div className="space-y-6">
             <Confirmation/>
-            <div className="flex justify-end gap-2">
+            <div className="flex flex-col sm:flex-row justify-end gap-2 ">
                 {onBack && (
-                    <Button variant="outline" onClick={onBack} className='bg-gray-500 hover:bg-gray-700 text-white hover:text-white cursor-pointer'>
+                    <Button variant="outline" onClick={onBack} className='bg-gray-500 hover:bg-gray-700 text-white hover:text-white cursor-pointer w-full sm:w-auto'>
                         Back to Guest Info
                     </Button>
                 )}
-                <Button className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer' onClick={handleCompleteBooking}>
+                <Button className='bg-[#076DB3] hover:bg-[#054f80] cursor-pointer w-full sm:w-auto' onClick={handleCompleteBooking}>
                     Complete Booking
                 </Button>
             </div>
@@ -142,25 +142,28 @@ const Page: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gray-50">
-            <div className=" mx-auto ">
+            <div className="mx-auto">
                 {/* Step Navigation */}
                 <Card className="mb-4 p-0 rounded-none">
                     <CardContent className="p-0">
-                        <div className="flex">
+                        <div className="flex overflow-x-auto">
                             {steps.map((step, index) => {
                                 const isClickable = isStepClickable(index);
+                                const Icon = step.icon;
                                 return (
                                     <div
                                         key={index}
-                                        className={`flex-1 py-2 text-center relative transition-all ${index === currentStep
+                                        className={`flex-1 min-w-[80px] sm:min-w-0 py-3 sm:py-4 px-2 text-center relative transition-all ${
+                                            index === currentStep
                                                 ? "bg-blue-50 border-b-2 border-[#076DB3]"
                                                 : completedSteps.has(index)
                                                     ? "bg-green-50"
                                                     : "bg-white"
-                                            } ${isClickable
+                                        } ${
+                                            isClickable
                                                 ? "cursor-pointer hover:bg-gray-50"
                                                 : "cursor-not-allowed opacity-75"
-                                            }`}
+                                        }`}
                                         onClick={() => {
                                             if (isClickable) {
                                                 goToStep(index);
@@ -184,26 +187,43 @@ const Page: React.FC = () => {
                                         }
                                         aria-disabled={!isClickable}
                                     >
-                                        <div>
+                                        <div className="flex flex-col items-center gap-1">
+                                            {/* Icon for mobile, hidden on larger screens */}
+                                            <Icon className={`sm:hidden w-5 h-5 ${
+                                                index === currentStep
+                                                    ? "text-[#076DB3]"
+                                                    : completedSteps.has(index)
+                                                        ? "text-green-600"
+                                                        : "text-gray-400"
+                                            }`} />
+                                            
+                                            {/* Step number - hidden on mobile */}
                                             <div
-                                                className={`font-medium text-sm ${index === currentStep
+                                                className={`hidden sm:block font-medium text-sm ${
+                                                    index === currentStep
                                                         ? "text-[#076DB3]"
                                                         : completedSteps.has(index)
                                                             ? "text-green-600"
                                                             : "text-gray-500"
-                                                    }`}
+                                                }`}
                                             >
                                                 Step {index + 1}
                                             </div>
+                                            
+                                            {/* Title */}
                                             <div
-                                                className={`text-xs uppercase tracking-wide ${index === currentStep
+                                                className={`text-[10px] sm:text-xs uppercase tracking-wide ${
+                                                    index === currentStep
                                                         ? "text-[#076DB3]"
                                                         : completedSteps.has(index)
                                                             ? "text-green-600"
                                                             : "text-gray-400"
-                                                    }`}
+                                                }`}
                                             >
-                                                {step.title}
+                                                <span className="hidden sm:inline">{step.title}</span>
+                                                <span className="sm:hidden">
+                                                    {step.title.split(' ').slice(-1)[0]}
+                                                </span>
                                             </div>
                                         </div>
                                     </div>

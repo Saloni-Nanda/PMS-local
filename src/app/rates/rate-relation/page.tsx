@@ -143,7 +143,7 @@ const Page: React.FC = () => {
                 </div>
                 {/* Export and Search Row */}
                 <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
-                    <div className="flex flex-col sm:flex-row gap-2 order-2 sm:order-1">
+                    <div className="flex flex-col md:flex-row gap-2 order-2 sm:order-1">
                         <Link href="/rates/rate-relation/edit">
                             <button className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer">
                                 Add Relation
@@ -242,11 +242,11 @@ const Page: React.FC = () => {
                                     <td className="px-4 py-3 border-b border-gray-100 text-xs align-middle text-center ">
                                         <div className="flex justify-center gap-2">
                                             <Link href="/rates/rate-relation/edit">
-                                                <button className="text-blue-500 hover:text-blue-700 transition-colors p-1 cursor-pointer">
+                                                <button className="h-5 w-5 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                     <EditIcon size={14} />
                                                 </button>
                                             </Link>
-                                            <button className="text-red-500 hover:text-red-700 transition-colors p-1 mb-1 cursor-pointer">
+                                            <button className="h-5 w-5 text-gray-600 cursor-pointer bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center">
                                                 <Trash2 size={14} />
                                             </button>
                                         </div>

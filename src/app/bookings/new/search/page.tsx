@@ -116,7 +116,7 @@ export default function BookingPage() {
       </aside>
 
       {/* Main Content */}
-      <main className="flex-1 p-6">
+      <main className="flex-1 p-1 sm:p-1 lg:p-6">
         <h1 className="text-xl font-semibold text-gray-800 mb-6">
           Availability From 31/08/2022 To 01/09/2022
         </h1>
