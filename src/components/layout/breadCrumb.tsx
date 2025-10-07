@@ -5,7 +5,6 @@ import { usePathname } from "next/navigation"
 import Link from "next/link"
 import { Slot } from "@radix-ui/react-slot"
 import { ChevronRight, MoreHorizontal } from "lucide-react"
-
 import { cn } from "@/lib/utils"
 
 // ----------------------
@@ -21,7 +20,8 @@ function BreadcrumbList({ className, ...props }: React.ComponentPropsWithoutRef<
     <ol
       data-slot="breadcrumb-list"
       className={cn(
-        "flex flex-wrap items-center gap-1.5 text-sm text-muted-foreground break-words sm:gap-2.5 ",
+        // responsive font sizes
+        "flex flex-wrap items-center gap-1.5 break-words text-xs sm:text-sm md:text-md lg:text-base text-muted-foreground sm:gap-2.5",
         className
       )}
       {...props}
@@ -100,10 +100,6 @@ function BreadcrumbEllipsis({ className, ...props }: React.ComponentPropsWithout
 }
 
 // ----------------------
-// Dynamic Breadcrumb
-// ----------------------
-
-// ----------------------
 // Dynamic Breadcrumb (without "Home")
 // ----------------------
 
@@ -127,7 +123,7 @@ export function AppBreadcrumb() {
 
           return (
             <React.Fragment key={href}>
-              {index > 0 && <BreadcrumbSeparator />} {/* separator only after first */}
+              {index > 0 && <BreadcrumbSeparator />}
               <BreadcrumbItem>
                 {isLast ? (
                   <BreadcrumbPage>{formatLabel(segment)}</BreadcrumbPage>
@@ -144,7 +140,6 @@ export function AppBreadcrumb() {
     </Breadcrumb>
   )
 }
-
 
 // ----------------------
 // Exports

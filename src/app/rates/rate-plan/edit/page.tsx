@@ -1,8 +1,9 @@
 "use client"
 import { useState } from 'react';
-import { Calendar, ChevronDown } from 'lucide-react';
+import {  ChevronDown } from 'lucide-react';
 import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
+import { CustomListbox } from '@/components/ui/Listbox';
 
 export default function Page() {
     const rateTypes = ['NET']
@@ -55,14 +56,14 @@ export default function Page() {
                     {/* 1st line */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">Rate Plan</label>
+                            <label className="block text-sm text-gray-600 mb-2">Rate Plan</label>
                             <div className="relative">
                                 <input
                                     type="text"
                                     value={rateData.ratePlan}
                                     onChange={(e) => setRateData({ ...rateData, ratePlan: e.target.value })}
                                     placeholder="Rate Plan"
-                                    className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                                    className="w-full px-2 py-2 border border-gray-300 rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent pr-8 text-xs sm:text-sm"
                                 />
@@ -70,14 +71,14 @@ export default function Page() {
                         </div>
 
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">Rate Name</label>
+                            <label className="block text-sm text-gray-600 mb-2">Rate Name</label>
                             <div className="relative">
                                 <input
                                     type="text"
                                     value={rateData.rateName}
                                     onChange={(e) => setRateData({ ...rateData, rateName: e.target.value })}
                                     placeholder="Rate Name"
-                                    className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                                    className="w-full px-2 py-2 border border-gray-300 rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent pr-8 text-xs sm:text-sm"
                                 />
@@ -89,34 +90,12 @@ export default function Page() {
                     {/* 2nd line */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div className="flex flex-col gap-1">
-                            <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                                Rate Type
-                            </label>
-                            <div className="relative min-w-[120px] sm:min-w-[250px]">
-                                <Listbox value={rateData.rateType}
-                                    onChange={(val) => setRateData({ ...rateData, rateType: val })}
-                                >
-                                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
-                border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
-                hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                                        {rateData.rateType}
-                                        <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
-                rounded-md shadow-md z-10 text-xs sm:text-sm">
-                                        {rateTypes.map((c) => (
-                                            <ListboxOption
-                                                key={c}
-                                                value={c}
-                                                className="px-2 py-1 cursor-pointer flex justify-between items-center 
-                      text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
-                                            >
-                                                {c}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </Listbox>
-                            </div>
+                            <CustomListbox
+                                label="Rate Type"
+                                value={rateData.rateType}
+                                onChange={(val) => setRateData({ ...rateData, rateType: val })}
+                                options={rateTypes}
+                            />
                         </div>
                         <div className="flex flex-col gap-2">
                             <label className="text-sm text-gray-700">Status</label>
@@ -143,14 +122,14 @@ export default function Page() {
                     {/* 3rd line */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">Notes</label>
+                            <label className="block text-sm text-gray-600 mb-2">Notes</label>
                             <div className="relative">
                                 <textarea
                                     value={rateData.notes}
                                     rows={4}
                                     onChange={(e) => setRateData({ ...rateData, notes: e.target.value })}
                                     placeholder="Notes"
-                                    className="w-full px-2 py-1.5 border border-[#076DB3] rounded-md bg-gray-50 
+                                    className="w-full px-2 py-2 border border-gray-300 rounded-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent pr-8 text-xs sm:text-sm"
                                 />
@@ -158,7 +137,8 @@ export default function Page() {
                         </div>
                         <div className='flex flex-col'>
                             <div className="flex flex-col gap-1">
-                                <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
+
+                                <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap mb-1">
                                     Policy
                                 </label>
                                 <div className="relative min-w-[120px] sm:min-w-[250px]">
@@ -167,7 +147,7 @@ export default function Page() {
 
                                     >
                                         <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
-                border border-[#076DB3]  rounded-t-md text-xs sm:text-sm bg-gray-50 text-gray-900 
+                border border-gray-300  rounded-t-md text-xs sm:text-sm bg-gray-50 text-gray-900 
                 hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
                                             {rateData.policy}
                                             <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
@@ -195,7 +175,7 @@ export default function Page() {
                                     rows={3}
                                     onChange={(e) => setRateData({ ...rateData, policyNotes: e.target.value })}
                                     placeholder="Notes"
-                                    className="w-full px-2 py-1.5 border border-[#076DB3] rounded-b-md bg-gray-50 
+                                    className="w-full px-2 py-2 border border-gray-300 rounded-b-md bg-gray-50 
                   text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                   focus:ring-[#076DB3] focus:border-transparent pr-8 text-xs sm:text-sm"
                                 />
@@ -207,43 +187,18 @@ export default function Page() {
                     {/* 4th line */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Type Dropdown */}
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                                Type
-                            </label>
-                            <div className="relative min-w-[120px] sm:min-w-[250px]">
-                                <Listbox
-                                    value={rateData.type}
-                                    onChange={(val) => setRateData({ ...rateData, type: val })}
-                                >
-                                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
-                    border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
-                    hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                                        {rateData.type}
-                                        <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
-                    rounded-md shadow-md z-10 text-xs sm:text-sm">
-                                        {types.map((c) => (
-                                            <ListboxOption
-                                                key={c}
-                                                value={c}
-                                                className="px-2 py-1 cursor-pointer flex justify-between items-center 
-                          text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
-                                            >
-                                                {c}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </Listbox>
-                            </div>
-                        </div>
+                        <CustomListbox
+                            label="Type"
+                            value={rateData.type}
+                            onChange={(val) => setRateData({ ...rateData, type: val })}
+                            options={types}
+                        />
 
                         {/* Amount Input */}
                         <div>
-                            <label className="block text-sm text-gray-600 mb-1">Amount</label>
+                            <label className="block text-sm text-gray-600 mb-2">Amount</label>
                             <div className="flex">
-                                <span className="inline-flex items-center px-2 border border-r-0 border-[#076DB3] rounded-l-md bg-gray-100 text-gray-600 text-sm">
+                                <span className="inline-flex items-center px-2 border border-r-0 border-gray-300 rounded-l-md bg-gray-100 text-gray-600 text-sm">
                                     {rateData.type === "Percentage" ? "%" : "$"}
                                 </span>
                                 <input
@@ -254,7 +209,7 @@ export default function Page() {
                                         setRateData({ ...rateData, amount: e.target.value })
                                     }
                                     placeholder="Amount"
-                                    className="w-full px-2 py-1.5 border border-[#076DB3] rounded-r-md bg-gray-50 
+                                    className="w-full px-2 py-2 border border-gray-300 rounded-r-md bg-gray-50 
                     text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-1 
                     focus:ring-[#076DB3] focus:border-transparent text-xs sm:text-sm"
                                 />
@@ -265,70 +220,22 @@ export default function Page() {
                     {/* 5th line */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         {/* Currency Dropdown */}
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                                Currency
-                            </label>
-                            <div className="relative min-w-[120px] sm:min-w-[250px]">
-                                <Listbox
-                                    value={rateData.currency}
-                                    onChange={(val) => setRateData({ ...rateData, currency: val })}
-                                >
-                                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
-                    border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
-                    hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                                        {rateData.currency}
-                                        <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
-                    rounded-md shadow-md z-10 text-xs sm:text-sm">
-                                        {currencies.map((c) => (
-                                            <ListboxOption
-                                                key={c}
-                                                value={c}
-                                                className="px-2 py-1 cursor-pointer flex justify-between items-center 
-                          text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
-                                            >
-                                                {c}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </Listbox>
-                            </div>
-                        </div>
+                        <CustomListbox
+                            label="Currency"
+                            value={rateData.currency}
+                            onChange={(val) => setRateData({ ...rateData, currency: val })}
+                            options={currencies}
+                        />
+
 
                         {/* Meal Plans Dropdown */}
-                        <div className="flex flex-col gap-1">
-                            <label className="text-xs sm:text-sm text-gray-600 whitespace-nowrap">
-                                Meal Plans
-                            </label>
-                            <div className="relative min-w-[120px] sm:min-w-[250px]">
-                                <Listbox
-                                    value={rateData.mealPlan}
+                        <CustomListbox
+                            label="Meal Plans"
+                            value={rateData.mealPlan}
                                     onChange={(val) => setRateData({ ...rateData, mealPlan: val })}
-                                >
-                                    <ListboxButton className="w-full flex items-center justify-between px-2 py-1.5 
-                    border border-[#076DB3] rounded-md text-xs sm:text-sm bg-gray-50 text-gray-900 
-                    hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
-                                        {rateData.mealPlan}
-                                        <ChevronDown className="w-3.5 h-3.5 text-gray-500 ml-1" />
-                                    </ListboxButton>
-                                    <ListboxOptions className="absolute mt-1 py-2 w-full bg-white border border-[#076DB3] 
-                    rounded-md shadow-md z-10 text-xs sm:text-sm">
-                                        {mealPlans.map((c) => (
-                                            <ListboxOption
-                                                key={c}
-                                                value={c}
-                                                className="px-2 py-1 cursor-pointer flex justify-between items-center 
-                          text-gray-600 data-[focus]:bg-gray-200 data-[selected]:font-semibold"
-                                            >
-                                                {c}
-                                            </ListboxOption>
-                                        ))}
-                                    </ListboxOptions>
-                                </Listbox>
-                            </div>
-                        </div>
+                            options={mealPlans}
+                        />
+                       
                     </div>
 
                     {/* 6th line */}
@@ -354,8 +261,8 @@ export default function Page() {
                                 >
                                     <span
                                         className={`inline-block h-3.5 w-3.5 transform rounded-full bg-white transition-transform ${rateData[toggle.key as keyof typeof rateData] === "Yes"
-                                                ? "translate-x-4"
-                                                : "translate-x-1"
+                                            ? "translate-x-4"
+                                            : "translate-x-1"
                                             }`}
                                     />
                                 </button>

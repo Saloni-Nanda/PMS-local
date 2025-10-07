@@ -1,5 +1,5 @@
 "use client"
-import { Search, ChevronDown, Filter, Edit2, Trash2, EditIcon } from 'lucide-react';
+import { Search, Trash2, EditIcon } from 'lucide-react';
 import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
 
@@ -21,10 +21,10 @@ interface SortConfig {
 const Page: React.FC = () => {
 
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-    const ratePlans: RatePlanData[] = [
+    const ratePlans: RatePlanData[] = useMemo(() =>[
         {
             id: "1",
             ratePlan: "AGEN",
@@ -102,7 +102,7 @@ const Page: React.FC = () => {
             currency: "MXN",
             commissionable: "Si"
         }
-    ];
+    ], []);
 
     // const filteredRatePlans = ratePlans.filter(ratePlan =>
     //     ratePlan.ratePlan.toLowerCase().includes(searchTerm.toLowerCase()) ||

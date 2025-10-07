@@ -8,11 +8,11 @@ import { MaintenanceData, SortConfig } from '@/types';
 
 const Page: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
 
     const [sortConfig, setSortConfig] = useState<SortConfig<MaintenanceData>>({ key: null, direction: 'asc' });
 
-    const maintenanceDatas: MaintenanceData[] = [
+    const maintenanceDatas: MaintenanceData[] = useMemo(() =>[
         {
             id: "1",
             room: "101",
@@ -46,7 +46,7 @@ const Page: React.FC = () => {
             outOfOrder: false,
             notes: "Under maintenance due to leaks, urgent to repair"
         },
-    ];
+    ], []);
 
     // Helper function to get priority order value
     const getPriorityOrder = (priority: string): number => {

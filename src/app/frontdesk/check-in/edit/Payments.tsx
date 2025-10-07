@@ -15,17 +15,14 @@ interface PaymentRecord {
 
 const Payments: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
 
-  const statusOptions = ["All", "Unpaid", "Partially Paid", "Paid"];
   const paymentTypes = ["Advance Payment", "Full Payment", "Partial Payment"];
   const currencies = ["MXN (Mexican Peso)", "USD (US Dollar)", "EUR (Euro)"]
 
   const [isPaymentModalOpen, setIsPaymentModalOpen] = useState(false);
   const [isAdvancePaymentOpen, setIsAdvancePaymentOpen] = useState(false);
   const [isDepositeModalOpen, setIsDepositeModalOpen] = useState(false);
-  const [selectedRecord, setSelectedRecord] = useState<PaymentRecord | null>(null);
-
   const [paymentModalData, setPaymentModalData] = useState({
     type: paymentTypes[0],
     currency: currencies[0],

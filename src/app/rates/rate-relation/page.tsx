@@ -1,6 +1,6 @@
 "use client"
 import React, { useMemo, useState } from 'react';
-import { Search, Edit2, Trash2, EditIcon, ListFilterIcon } from 'lucide-react';
+import { Search, Trash2, EditIcon, ListFilterIcon } from 'lucide-react';
 import Link from 'next/link';
 import CustomDatePicker from '@/components/ui/customDatePicker';
 
@@ -22,7 +22,7 @@ const Page: React.FC = () => {
     const [date, setDate] = useState(new Date("2022-08-20"));
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-    const rateDatas: RateRelatedData[] = [
+    const rateDatas: RateRelatedData[] = useMemo(() => [
         {
             id: "1",
             baseRate: "RACK",
@@ -51,7 +51,7 @@ const Page: React.FC = () => {
             value: 0.00,
             relationType: "Percentage-Decrement"
         }
-    ];
+    ], []);
 
     // const filteredData = rateData.filter(item =>
     //     item.baseRate.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -144,7 +144,7 @@ const Page: React.FC = () => {
                 {/* Export and Search Row */}
                 <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center gap-3 sm:gap-4">
                     <div className="flex flex-col md:flex-row gap-2 order-2 sm:order-1">
-                        <Link href="/rates/rate-relation/edit">
+                        <Link href="/rates/rate-relation/new">
                             <button className="px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-normal cursor-pointer">
                                 Add Relation
                             </button>

@@ -24,7 +24,7 @@ const Page: React.FC = () => {
   const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
   const [toDate, setToDate] = useState(new Date("2022-08-20"));
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
 
   const statusOptions = ["All", "Unpaid", "Partially Paid", "Paid"];
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
@@ -34,7 +34,7 @@ const Page: React.FC = () => {
 
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-  const accountsReceivables: AccountReceivableData[] = [
+  const accountsReceivables: AccountReceivableData[] = useMemo(() => [
     {
       id: 1,
       guestName: "Javier Garcia",
@@ -65,7 +65,7 @@ const Page: React.FC = () => {
       date: new Date("2025-09-29"),
       notes: "carlos.martinez@email.com"
     }
-  ];
+  ], []);
 
   const filteredRecords = useMemo(() => {
     return accountsReceivables.filter(record =>

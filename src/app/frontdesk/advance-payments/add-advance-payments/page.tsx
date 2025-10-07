@@ -1,7 +1,5 @@
 "use client"
 import React, { useState } from 'react';
-import { ChevronDown } from 'lucide-react';
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 import { CustomListbox } from '@/components/ui/Listbox';
 

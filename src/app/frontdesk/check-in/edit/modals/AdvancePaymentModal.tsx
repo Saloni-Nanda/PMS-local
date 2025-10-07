@@ -1,20 +1,23 @@
-import { ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import React from 'react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import { CustomListbox } from '@/components/ui/Listbox';
+
+type AdvancePaymentData = {
+  advancePaymentType: string;
+  amountAvailable: string;
+  amountAssigned: string;
+};
 
 interface AdvancePaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAccept: () => void;
-  data: {
-    advancePaymentType: string;
-    amountAvailable: string;
-    amountAssigned: string;
-  };
-  setData: (data: any) => void;
+  data: AdvancePaymentData;
+  setData: (data: AdvancePaymentData) => void;
   paymentTypes: string[];
 }
+
+
 
 const AdvancePaymentModal: React.FC<AdvancePaymentModalProps> = ({
   isOpen,

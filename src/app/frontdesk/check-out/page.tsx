@@ -7,11 +7,11 @@ import { CheckOutData, SortConfig } from '@/types';
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CheckOutData>>({ key: null, direction: 'asc' });
 
-    const CheckOutDatas: CheckOutData[] = [
+    const CheckOutDatas: CheckOutData[] = useMemo(() =>[
         {
             id:1,
             folioNr: 317,
@@ -38,7 +38,7 @@ const Page: React.FC = () => {
             roomTotal: -15.00,
             balance: -15.00
         }
-    ];
+    ], []);
 
     // Search functionality - search across multiple fields
     // const filteredRecords = CheckOutDatas.filter(record =>

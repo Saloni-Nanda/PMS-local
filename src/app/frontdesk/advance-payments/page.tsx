@@ -7,19 +7,17 @@ import CustomDatePicker from '@/components/ui/customDatePicker';
 import { Button } from '@/components/ui/button';
 
 import { AdvancePayments, SortConfig } from '@/types';
-import { CustomListbox } from '@/components/ui/Listbox';
-
 
 const Page: React.FC = () => {
   const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
   const [toDate, setToDate] = useState(new Date("2022-08-20"));
   const [searchTerm, setSearchTerm] = useState('');
-  const [currentPage, setCurrentPage] = useState(1);
+  const [, setCurrentPage] = useState(1);
   const statusOptions = ["Non Selected"];
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
   const [sortConfig, setSortConfig] = useState<SortConfig<AdvancePayments>>({ key: null, direction: 'asc' });
 
-  const advancePayments: AdvancePayments[] = [
+  const advancePayments: AdvancePayments[] = useMemo(() => [
     {
       id: "00041",
       bookingNumber: "MX120043-W2000011",
@@ -50,7 +48,7 @@ const Page: React.FC = () => {
       notAssigned: 0.00,
       currency: "MXN"
     },
-  ];
+  ], []);
 
   // const filteredBookings = advancePayments.filter(advancePayments =>
   //   advancePayments.guestName.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -145,13 +143,30 @@ const Page: React.FC = () => {
 
             {/* Status Filter and Filter Button */}
             <div className="flex flex-col sm:flex-row gap-3 sm:gap-4 w-full sm:w-auto">
-             
-              <CustomListbox
-                label="Status:"
-                value={selectedStatus}
-                onChange={setSelectedStatus}
-                options={statusOptions}
-              />
+              <div className="flex flex-col sm:flex-row sm:items-center gap-2">
+                <label className="font-normal text-gray-800 text-sm sm:text-base whitespace-nowrap">
+                  Status:
+                </label>
+                <div className="relative w-full sm:min-w-[160px] lg:min-w-[200px]">
+                  <Listbox value={selectedStatus} onChange={setSelectedStatus}>
+                    <ListboxButton className="w-full flex items-center justify-between px-3 py-2 border border-gray-400 rounded-md text-sm bg-white text-gray-600 font-normal hover:bg-gray-100 focus:border-[#076DB3] focus:outline-none transition">
+                      {selectedStatus}
+                      <ChevronDown className="w-4 h-4 text-gray-500 ml-2" />
+                    </ListboxButton>
+                    <ListboxOptions className="absolute mt-1 w-full py-2 bg-white border border-[#076DB3] rounded-md shadow-lg z-10">
+                      {statusOptions.map((option) => (
+                        <ListboxOption
+                          key={option}
+                          value={option}
+                          className="px-3 py-2 cursor-pointer text-sm flex justify-between items-center text-gray-600 font-normal data-[focus]:bg-gray-200 data-[focus]:text-gray-600 data-[selected]:font-semibold"
+                        >
+                          {option}
+                        </ListboxOption>
+                      ))}
+                    </ListboxOptions>
+                  </Listbox>
+                </div>
+              </div>
 
               <button className="px-4 sm:px-6 py-2 bg-white border border-gray-400 rounded-md text-sm text-gray-600 cursor-pointer flex items-center justify-center gap-2 hover:bg-gray-50 focus:border-[#076DB3] focus:outline-none">
                 <ListFilterIcon size={14} />

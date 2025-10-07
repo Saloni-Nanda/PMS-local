@@ -9,7 +9,7 @@ import { RoomData, SortConfig } from '@/types';
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [selectedRoom, setSelectedRoom] = useState('D1_1');
@@ -18,7 +18,7 @@ const Page: React.FC = () => {
 
     const roomOptions = ["DL_1", "DL_2", "DL_3"];
 
-    const roomAssign: RoomData[] = [
+    const roomAssign: RoomData[] = useMemo(()=> [
         {
             id: '1',
             roomNumber: 'DL-3',
@@ -52,7 +52,7 @@ const Page: React.FC = () => {
             guestName: 'Marcovic Pou',
             numberOfRooms: '1 de: 1'
         },
-    ];
+    ], []);
 
     const filteredRoomAssign = useMemo(() => {
         return roomAssign.filter(room =>

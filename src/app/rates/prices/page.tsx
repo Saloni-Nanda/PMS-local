@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronLeft, ChevronRight, Luggage, UserRound, UsersRound } from "lucide-react";
+import { ChevronLeft, ChevronRight, UserRound, UsersRound } from "lucide-react";
 
 const roomData = [
     {

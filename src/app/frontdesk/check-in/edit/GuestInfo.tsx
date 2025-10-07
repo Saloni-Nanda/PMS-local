@@ -1,7 +1,5 @@
 "use client"
 import React, { useState } from 'react';
-import { ChevronDown, Calendar, Plus } from 'lucide-react';
-import { Listbox, ListboxButton, ListboxOption, ListboxOptions } from '@headlessui/react';
 import { CustomListbox } from '@/components/ui/Listbox';
 
 const GuestInfo = () => {
@@ -48,15 +46,6 @@ const GuestInfo = () => {
         website: '',
         companionInfo: ''
     });
-
-    const handleCloseModal = () => {
-        // Handle close logic
-    };
-
-    const handleAccept = () => {
-        // Handle accept logic
-    };
-
 
     return (
         <div className="flex bg-gray-50 min-h-screen">

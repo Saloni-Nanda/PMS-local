@@ -1,22 +1,25 @@
-import { ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import React from 'react';
 //import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import { CustomListbox } from '@/components/ui/Listbox';
+
+interface DepositData {
+  type: string;
+  currency: string;
+  amount: string;
+  folio: string;
+}
 
 interface DepositModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAccept: () => void;
-  data: {
-    type: string;
-    currency: string;
-    amount: string;
-    folio: string;
-  };
-  setData: (data: any) => void;
+  data: DepositData;
+  setData: (data: DepositData) => void;
   paymentTypes: string[];
   currencies: string[];
 }
+
 
 const DepositModal: React.FC<DepositModalProps> = ({
   isOpen,

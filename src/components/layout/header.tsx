@@ -10,20 +10,20 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Bell, Settings, User, LogOut, ChevronDown } from 'lucide-react'
+import { AppBreadcrumb } from './breadCrumb'
 
 export function Header() {
   return (
-    <header className="flex items-center justify-between px-8 py-3.5 h-18 bg-white border-b border-[#076DB3]"
-    >
-      {/* Logo/Brand Space */}
-      <div className="flex items-center">
-       
+    <header className="flex items-center justify-between px-2 md:px-8 py-3.5 h-18 bg-white border-b border-[#076DB3]">
+      {/* Left Side - Breadcrumb */}
+      <div className="flex items-center pr-3">
+        <AppBreadcrumb />
       </div>
 
       {/* Right Side Actions */}
-      <div className="flex items-center space-x-2">
+      <div className="flex items-center lg:space-x-2">
         {/* Notifications */}
         <div className="relative">
           <Button
@@ -31,10 +31,10 @@ export function Header() {
             size="sm"
             className="relative text-gray-600 hover:text-[#054f80] hover:bg-gray-50 transition-all duration-200 rounded-full h-10 w-10 p-0"
           >
-            <Bell className="h-5 w-5" />
+            <Bell className="scale-125" />
             <Badge
               variant="destructive"
-              className="absolute -top-1 -right-1 h-5 w-5 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-sm animate-pulse"
+              className="absolute top-0 right-0 h-4 w-4 rounded-full p-0 flex items-center justify-center text-xs bg-red-500 text-white border-2 border-white shadow-sm animate-pulse"
             >
               3
             </Badge>
@@ -46,41 +46,45 @@ export function Header() {
           <DropdownMenuTrigger asChild>
             <Button
               variant="ghost"
-              className="flex items-center space-x-3 px-4 py-2 rounded-xl transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#054f80]/20 focus:outline-none group"
+              className="flex items-center space-x-2 lg:space-x-3 px-2 lg:px-4 py-2 rounded-xl transition-all duration-200 focus-visible:ring-2 focus-visible:ring-[#054f80]/20 focus:outline-none group"
             >
-              <Avatar className="h-9 w-9 ring-2 ring-gray-200 group-hover:ring-[#054f80]/30 transition-all duration-200">
-                <AvatarImage src="/avatars/brian-dass.png" alt="Brian Dass" />
+              <Avatar className=" ring-2 ring-gray-200 group-hover:ring-[#054f80]/30 transition-all duration-200">
                 <AvatarFallback className="bg-gradient-to-br from-[#054f80] to-[#0a6ba8] text-white font-semibold text-sm border-0">
-                  BD
+                  {"Name".slice(0, 2).toUpperCase()}
                 </AvatarFallback>
               </Avatar>
+              
+              {/* Hide text on small screens */}
               <div className="hidden md:block text-left">
                 <p className="text-sm font-semibold text-gray-900 group-hover:text-[#054f80] transition-colors">
-                  Brian Dass
+                  Name
                 </p>
                 <p className="text-xs text-gray-500 font-medium">
-                  Hotel Manager
+                  Designation
                 </p>
               </div>
-              <ChevronDown className="h-4 w-4 text-gray-400 group-hover:text-[#054f80] transition-colors hidden md:block" />
+              
+              {/* Hide chevron on mobile */}
+              <ChevronDown className="hidden md:block h-4 w-4 text-gray-400 group-hover:text-[#054f80] transition-colors" />
             </Button>
           </DropdownMenuTrigger>
+
           <DropdownMenuContent className="w-64 bg-white border border-gray-200 shadow-lg rounded-xl p-2" align="end">
             <DropdownMenuLabel className="p-3">
               <div className="flex items-center space-x-3">
                 <Avatar className="h-10 w-10 ring-2 ring-gray-200">
-                  <AvatarImage src="/avatars/brian-dass.png" alt="Brian Dass" />
                   <AvatarFallback className="bg-gradient-to-br from-[#054f80] to-[#0a6ba8] text-white font-semibold">
-                    BD
+                    {"Name".slice(0, 2).toUpperCase()}
                   </AvatarFallback>
                 </Avatar>
                 <div>
-                  <p className="font-semibold text-gray-900 text-sm">Brian Dass</p>
-                  <p className="text-xs text-gray-500 font-medium">Hotel Manager</p>
-                  <p className="text-xs text-gray-400 mt-0.5">brian.dass@hotelstar.com</p>
+                  <p className="font-semibold text-gray-900 text-sm">Name</p>
+                  <p className="text-xs text-gray-500 font-medium">Designation</p>
+                  <p className="text-xs text-gray-400 mt-0.5">Mail Id</p>
                 </div>
               </div>
             </DropdownMenuLabel>
+
             <DropdownMenuSeparator className="my-2" />
             <DropdownMenuItem className="rounded-lg hover:bg-gray-50 transition-colors cursor-pointer p-3">
               <User className="mr-3 h-4 w-4 text-gray-500" />

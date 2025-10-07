@@ -1,8 +1,8 @@
 "use client"
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { CheckCircle2, CreditCard, User, FileCheck, Hotel } from 'lucide-react';
+import { CheckCircle2, CreditCard, User, Hotel } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import RoomSelection from './RoomSelection';
 import Payments from './Payments';

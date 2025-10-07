@@ -1,16 +1,16 @@
 "use client"
-import { Edit2, EditIcon, Search } from 'lucide-react';
+import {EditIcon, Search } from 'lucide-react';
 import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
 
 import { CheckInBookingData, SortConfig } from '@/types';
 
 const Page: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CheckInBookingData>>({ key: null, direction: 'asc' });
 
-    const checkInBookings: CheckInBookingData[] = [
+    const checkInBookings: CheckInBookingData[] = useMemo(() => [
         {
             bookingNumber: "MX120043-W2000011",
             ratePlan: "000316",
@@ -44,7 +44,7 @@ const Page: React.FC = () => {
             guestName: "Maria Garcia",
             email: "maria@test.com",
         }
-    ];
+    ], []);
 
     // Search functionality - search across multiple fields
     // const filteredBookings = checkInBookings.filter(booking =>

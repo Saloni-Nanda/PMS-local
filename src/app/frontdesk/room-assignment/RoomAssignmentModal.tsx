@@ -1,7 +1,5 @@
 import React from 'react';
-import { ChevronDown, X } from 'lucide-react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
-
+import { X } from 'lucide-react';
 import { RoomData } from '@/types';
 import { CustomListbox } from '@/components/ui/Listbox';
 

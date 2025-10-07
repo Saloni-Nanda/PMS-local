@@ -1,18 +1,19 @@
-import { ChevronDown, X } from 'lucide-react';
+import { X } from 'lucide-react';
 import React from 'react';
-import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import { CustomListbox } from '@/components/ui/Listbox';
+
+interface PaymentData {
+  type: string;
+  currency: string;
+  amount: string;
+}
 
 interface PaymentModalProps {
   isOpen: boolean;
   onClose: () => void;
   onAccept: () => void;
-  data: {
-    type: string;
-    currency: string;
-    amount: string;
-  };
-  setData: (data: any) => void;
+  data: PaymentData;
+  setData: (data: PaymentData) => void;
   paymentTypes: string[];
   currencies: string[];
 }

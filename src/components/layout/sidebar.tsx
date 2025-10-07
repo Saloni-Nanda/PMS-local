@@ -15,7 +15,9 @@ import {
   LogOut,
   CalendarCheck,
   ChevronsLeftRightIcon,
+  CoinsIcon,
 } from 'lucide-react'
+import Image from 'next/image'
 
 const navigation = [
   {
@@ -74,6 +76,15 @@ const navigation = [
       { name: 'Prices', href: '/rates/prices' },
     ],
   },
+  {
+    name: 'Finance',
+    href: '/finance/commissions',
+    icon: CoinsIcon,
+    children: [
+      { name: 'Commissions', href: '/finance/commissions' },
+      { name: 'Payments', href: '/finance/payments' }
+    ],
+  },
 ]
 
 export function Sidebar() {
@@ -84,19 +95,19 @@ export function Sidebar() {
 
   // Collapse by default if screen < md (768px)
   useEffect(() => {
-  const handleResize = () => {
-    if (window.innerWidth < 1000) {
-      setCollapsed(true) // collapse on small screens
-    } else {
-      setCollapsed(false) // open on medium+ screens
+    const handleResize = () => {
+      if (window.innerWidth < 1000) {
+        setCollapsed(true) // collapse on small screens
+      } else {
+        setCollapsed(false) // open on medium+ screens
+      }
     }
-  }
 
-  handleResize() // run on mount
-  window.addEventListener('resize', handleResize)
+    handleResize() // run on mount
+    window.addEventListener('resize', handleResize)
 
-  return () => window.removeEventListener('resize', handleResize)
-}, [])
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
 
 
   return (
@@ -117,7 +128,14 @@ export function Sidebar() {
       >
         {!collapsed && (
           <div className="flex items-center space-x-2 justify-center">
-            <img src="/logo.png" alt="" className="w-24 p-2" />
+
+            <Image
+              src="/logo.png"
+              alt="Logo"
+              width={180}
+              height={24}
+              className="p-2 w-24 h-auto"
+            />
           </div>
         )}
         <button

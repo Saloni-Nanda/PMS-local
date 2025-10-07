@@ -1,20 +1,18 @@
 "use client"
-import { Search, ListFilterIcon, Printer } from 'lucide-react';
+import { Search, Printer } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
-import { Button } from '@/components/ui/button';
 import RoomChangeModal from './RoomChangeModal'; // Adjust path as needed
 
 import { RoomChangeData, SortConfig } from '@/types';
 
 const Page: React.FC = () => {
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedRoom, setSelectedRoom] = useState('D1_1');
     const [currentBooking, setCurrentBooking] = useState<RoomChangeData | null>(null);
     const [sortConfig, setSortConfig] = useState<SortConfig<RoomChangeData>>({ key: null, direction: 'asc' });
 
-    const roomChange: RoomChangeData[] = [
+    const roomChange: RoomChangeData[] = useMemo(() => [
         {
             roomNumber: "T1_1",
             folioNr: "000316",
@@ -33,7 +31,7 @@ const Page: React.FC = () => {
             departureDate: new Date("2022-04-18"),
             guestName: "Arcovic Pou"
         }
-    ];
+    ], []);
 
     const [roomTypeOption, setRoomTypeOption] = useState<'same' | 'change'>('change');
     const [roomForm, setRoomForm] = useState({

@@ -1,5 +1,5 @@
 "use client"
-import { Search, ChevronDown, Filter, ListFilterIcon } from 'lucide-react';
+import { Search, ChevronDown, ListFilterIcon } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
@@ -29,12 +29,12 @@ const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
     const [searchTerm, setSearchTerm] = useState('');
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const options = ["Arrival Date", "Booking Date"];
     const [searchBy, setSearchBy] = useState(options[0]);
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
 
-    const bookings: BookingData[] = [
+    const bookings: BookingData[] = useMemo(() =>[
         {
             id: 1,
             arrivalDate: new Date("2022-03-17"),
@@ -74,7 +74,7 @@ const Page: React.FC = () => {
             currency: 'MXN',
             ratePlan: 'RACK'
         }
-    ];
+    ],[]);
 
     const filteredBookings = useMemo(() => {
         return bookings.filter(booking =>

@@ -23,7 +23,7 @@ const Page: React.FC = () => {
 
   const router = useRouter()
 
-  const handleSubmit = (action: string) => {
+  const handleSubmit = (_action: string) => {
     router.back()
   };
 

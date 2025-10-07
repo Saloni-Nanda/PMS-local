@@ -8,11 +8,11 @@ import { CashPaymentData, SortConfig } from '@/types';
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
-    const [currentPage, setCurrentPage] = useState(1);
+    const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CashPaymentData>>({ key: null, direction: 'asc' });
 
-    const cashPayments: CashPaymentData[] = [
+    const cashPayments: CashPaymentData[] = useMemo(() => [
         {
             date: new Date("2022-03-04"),
             time: "14:38:43",
@@ -46,7 +46,7 @@ const Page: React.FC = () => {
             idNr: 32,
             user: "jo.asistenteadmon@solusystems.mx"
         }
-    ];
+    ], []);
 
     // Search functionality - search across multiple fields
     // const filteredPayments = cashPayments.filter(payment =>

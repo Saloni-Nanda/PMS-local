@@ -16,7 +16,7 @@ export const CustomListbox: React.FC<CustomListboxProps> = ({
   placeholder
 }) => {
   return (
-    <div>
+    <div className="w-full z-50">
       <label className="block text-sm text-gray-600 mb-2">{label}</label>
       <Listbox value={value} onChange={onChange}>
         <div className="relative">
