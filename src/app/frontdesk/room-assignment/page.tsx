@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import CustomDatePicker from '@/components/ui/customDatePicker';
 import RoomAssignmentModal from './RoomAssignmentModal'; // Adjust path as needed
 import { RoomData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
@@ -15,6 +16,16 @@ const Page: React.FC = () => {
     const [selectedRoom, setSelectedRoom] = useState('D1_1');
     const [currentBooking, setCurrentBooking] = useState<RoomData | null>(null);
     const [sortConfig, setSortConfig] = useState<SortConfig<RoomData>>({ key: null, direction: 'asc' });
+
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const roomOptions = ["DL_1", "DL_2", "DL_3"];
 
@@ -199,6 +210,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                      {isLoading ? (
+                                            <TableSkeleton />
+                                        ) : (
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
@@ -321,6 +335,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                                        )}
                 </div>
 
                 {/* Room Selection Modal */}

@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import CommissionModal from './commissionModal';
 import { CommissionData, SortConfig } from '@/types';
 import CustomDatePicker from '@/components/ui/customDatePicker';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
@@ -13,6 +14,15 @@ const Page: React.FC = () => {
     const [isAddEditModalOpen, setIsAddEditModalOpen] = useState(false);
     const [editingCommission, setEditingCommission] = useState<CommissionData | null>(null);
     const [sortConfig, setSortConfig] = useState<SortConfig<CommissionData>>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const commissionData: CommissionData[] = useMemo(() => [
         {
@@ -258,8 +268,7 @@ const Page: React.FC = () => {
                             <button 
                                 onClick={handleOpenAddModal}
                                 className="px-4 py-2 bg-[#076DB3] hover:bg-[#054f80] border border-[#076DB3] rounded-md text-sm text-white cursor-pointer flex items-center justify-center gap-2 focus:outline-none">
-                                <Plus size={16} />
-                                <span className="">Add</span>
+                                <span className="">＋Add</span>
                             </button>
                             <button className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer">
                                 Export Excel
@@ -289,6 +298,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                     {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
                     <table className="w-full border-1 min-w-[800px]">
                         <thead>
                             <tr>
@@ -426,6 +438,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}

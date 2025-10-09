@@ -4,12 +4,23 @@ import { Search, ListFilterIcon, Printer } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
 import { CheckOutData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
     const [toDate, setToDate] = useState(new Date("2022-08-20"));
     const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CheckOutData>>({ key: null, direction: 'asc' });
+
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const CheckOutDatas: CheckOutData[] = useMemo(() =>[
         {
@@ -183,6 +194,9 @@ record.folioNr.toString().includes(searchTerm) ||
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                     {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
@@ -320,6 +334,7 @@ record.folioNr.toString().includes(searchTerm) ||
                             )}
                         </tbody>
                     </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}

@@ -30,7 +30,10 @@ const Page = () => {
   return (
     <div className="flex bg-gray-50 min-h-screen">
       <div className="bg-white p-1 sm:p-2 lg:p-4 rounded-md w-full max-w-4xl">
-        <h2 className="text-base sm:text-lg font-medium text-gray-900 mb-4">Payment Info</h2>
+        <h2 className="text-xl sm:text-3xl font-extrabold tracking-wide
+    text-[#076DB3] mb-6 relative inline-block
+    after:content-[''] after:block after:w-12 after:h-[3px]
+    after:bg-[#076DB3] after:mt-2 after:rounded-lg">Payment Info</h2>
 
         <div className="space-y-4">
           {/* Payment Information Grid */}
@@ -149,7 +152,7 @@ const Page = () => {
           </div>
         </div>
 
-        <div className="flex justify-end space-x-3 p-6 border-t bg-gray-50 rounded-b-lg">
+        <div className="flex justify-end space-x-3 p-6 ">
           <button
             onClick={handleCloseModal}
             className="px-4 py-2 text-sm font-medium text-white bg-gray-500 hover:bg-gray-600 rounded-md transition-colors cursor-pointer"

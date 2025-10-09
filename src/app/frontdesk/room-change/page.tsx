@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import RoomChangeModal from './RoomChangeModal'; // Adjust path as needed
 
 import { RoomChangeData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
     const [, setCurrentPage] = useState(1);
@@ -11,6 +12,15 @@ const Page: React.FC = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [currentBooking, setCurrentBooking] = useState<RoomChangeData | null>(null);
     const [sortConfig, setSortConfig] = useState<SortConfig<RoomChangeData>>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const roomChange: RoomChangeData[] = useMemo(() => [
         {
@@ -161,6 +171,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                    {isLoading ? (
+                                            <TableSkeleton />
+                                        ) : (
                     <table className="w-full border-1 min-w-[800px]">
                         <thead>
                             <tr>
@@ -272,6 +285,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                                        )}
                 </div>
 
                 {/* Room Change Modal */}

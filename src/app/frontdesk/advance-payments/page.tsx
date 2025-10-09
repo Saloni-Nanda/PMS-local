@@ -7,6 +7,7 @@ import CustomDatePicker from '@/components/ui/customDatePicker';
 import { Button } from '@/components/ui/button';
 
 import { AdvancePayments, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
   const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
@@ -16,6 +17,16 @@ const Page: React.FC = () => {
   const statusOptions = ["Non Selected"];
   const [selectedStatus, setSelectedStatus] = useState(statusOptions[0]);
   const [sortConfig, setSortConfig] = useState<SortConfig<AdvancePayments>>({ key: null, direction: 'asc' });
+
+  const [isLoading, setIsLoading] = useState(true);
+  
+      // Simulate loading data
+      React.useEffect(() => {
+          const timer = setTimeout(() => {
+              setIsLoading(false);
+          }, 1500);
+          return () => clearTimeout(timer);
+      }, []);
 
   const advancePayments: AdvancePayments[] = useMemo(() => [
     {
@@ -219,6 +230,9 @@ const Page: React.FC = () => {
 
         {/* Table Section */}
         <div className="overflow-x-auto">
+          {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
           <table className="w-full border-1 min-w-[900px]">
             <thead>
               <tr>
@@ -341,6 +355,7 @@ const Page: React.FC = () => {
             </tbody>
 
           </table>
+                    )}
         </div>
 
 

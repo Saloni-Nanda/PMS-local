@@ -1,4 +1,5 @@
 "use client"
+import TableSkeleton from '@/components/ui/TableSkeleton';
 import { Search, Trash2, EditIcon } from 'lucide-react';
 import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
@@ -23,6 +24,15 @@ const Page: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [, setCurrentPage] = useState(1);
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const ratePlans: RatePlanData[] = useMemo(() =>[
         {
@@ -226,6 +236,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                    {isLoading ? (
+                                            <TableSkeleton />
+                                        ) : (
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
@@ -350,6 +363,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                                        )}
                 </div>
 
                 {/* Pagination Section */}

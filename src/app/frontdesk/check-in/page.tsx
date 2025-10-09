@@ -4,11 +4,21 @@ import Link from 'next/link';
 import React, { useMemo, useState } from 'react';
 
 import { CheckInBookingData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
     const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CheckInBookingData>>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const checkInBookings: CheckInBookingData[] = useMemo(() => [
         {
@@ -155,6 +165,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                    {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
                     <table className="w-full min-w-[900px]">
                         <thead>
                             <tr className="bg-gray-100">
@@ -281,6 +294,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}

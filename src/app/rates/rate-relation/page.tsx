@@ -3,6 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { Search, Trash2, EditIcon, ListFilterIcon } from 'lucide-react';
 import Link from 'next/link';
 import CustomDatePicker from '@/components/ui/customDatePicker';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 interface RateRelatedData {
     id: string;
@@ -21,6 +22,15 @@ const Page: React.FC = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [date, setDate] = useState(new Date("2022-08-20"));
     const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const rateDatas: RateRelatedData[] = useMemo(() => [
         {
@@ -176,6 +186,9 @@ const Page: React.FC = () => {
 
             {/* Table Section */}
             <div className="overflow-x-auto">
+                 {isLoading ? (
+                                        <TableSkeleton />
+                                    ) : (
                 <table className="w-full border-1 min-w-[800px]">
                     <thead>
                         <tr>
@@ -256,6 +269,7 @@ const Page: React.FC = () => {
                         )}
                     </tbody>
                 </table>
+                                    )}
             </div>
 
             {/* Pagination Section */}

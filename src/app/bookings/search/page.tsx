@@ -5,25 +5,9 @@ import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headless
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import CustomDatePicker from '@/components/ui/customDatePicker';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
-interface BookingData {
-    id: number;
-    arrivalDate: Date;
-    reservationDate: Date;
-    bookingNumber: string;
-    status: string;
-    nights: number;
-    guestName: string;
-    specialRequests: string;
-    total: string;
-    currency: string;
-    ratePlan: string;
-}
-
-interface SortConfig {
-    key: keyof BookingData | null;
-    direction: 'asc' | 'desc';
-}
+import { BookingData, SortConfig } from '@/types';
 
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
@@ -32,9 +16,18 @@ const Page: React.FC = () => {
     const [, setCurrentPage] = useState(1);
     const options = ["Arrival Date", "Booking Date"];
     const [searchBy, setSearchBy] = useState(options[0]);
-    const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+    const [sortConfig, setSortConfig] = useState<SortConfig<BookingData>>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
 
-    const bookings: BookingData[] = useMemo(() =>[
+    // Simulate loading data
+    React.useEffect(() => {
+        const timer = setTimeout(() => {
+            setIsLoading(false);
+        }, 1500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    const bookings: BookingData[] = useMemo(() => [
         {
             id: 1,
             arrivalDate: new Date("2022-03-17"),
@@ -74,7 +67,7 @@ const Page: React.FC = () => {
             currency: 'MXN',
             ratePlan: 'RACK'
         }
-    ],[]);
+    ], []);
 
     const filteredBookings = useMemo(() => {
         return bookings.filter(booking =>
@@ -121,12 +114,12 @@ const Page: React.FC = () => {
     const SortIcon: React.FC<{ sortKey: keyof BookingData }> = ({ sortKey }) => {
         const getSortIcon = () => {
             if (sortConfig.key !== sortKey) {
-                return <span className=" text-gray-800 text-xs">⇅</span>;
+                return <span className="text-gray-800 text-xs">⇅</span>;
             }
 
             return sortConfig.direction === 'asc'
-                ? <span className=" text-gray-800 text-xs">⇅</span>
-                : <span className=" text-gray-800 text-xs">⇅</span>;
+                ? <span className="text-gray-800 text-xs">⇅</span>
+                : <span className="text-gray-800 text-xs">⇅</span>;
         };
 
         return (
@@ -139,6 +132,8 @@ const Page: React.FC = () => {
             </button>
         );
     };
+
+   
 
     return (
         <div className="">
@@ -164,7 +159,7 @@ const Page: React.FC = () => {
                                     selectedDate={toDate}
                                     onChange={setToDate}
                                     placeholder="Select To Date"
-                                    minDate={fromDate} // prevent To date < From date
+                                    minDate={fromDate}
                                 />
                             </div>
                         </div>
@@ -233,138 +228,142 @@ const Page: React.FC = () => {
 
                 {/* Table Section - Always Visible with Horizontal Scroll */}
                 <div className="overflow-x-auto">
-                    <table className="w-full border-1 min-w-[700px]">
-                        <thead>
-                            <tr>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            ARRIVAL<br />DATE
-                                        </div>
-                                        <SortIcon sortKey='arrivalDate' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            RESERVATION<br />DATE
-                                        </div>
-                                        <SortIcon sortKey='reservationDate' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            BOOKING<br />NUMBER
-                                        </div>
-                                        <SortIcon sortKey='bookingNumber' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div>STATUS</div>
-                                        <SortIcon sortKey='status' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div>NIGHTS</div>
-                                        <SortIcon sortKey='nights' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            GUEST<br />NAME
-                                        </div>
-                                        <SortIcon sortKey='guestName' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            SPECIAL<br />REQUESTS
-                                        </div>
-                                        <SortIcon sortKey='specialRequests' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div>TOTAL</div>
-                                        <SortIcon sortKey='total' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
-                                    <div className="flex justify-center gap-1 items-center">
-                                        <div className="leading-tight">
-                                            RATE<br />PLAN
-                                        </div>
-                                        <SortIcon sortKey='ratePlan' />
-                                    </div>
-                                </th>
-                                <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
-                                    ACTION
-                                </th>
-                            </tr>
-                        </thead>
-                        <tbody className='text-gray-700'>
-                            {filteredBookings.length === 0 ? (
+                    {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
+                        <table className="w-full border-1 min-w-[700px]">
+                            <thead>
                                 <tr>
-                                    <td colSpan={8} className="px-3 py-8 text-center text-gray-500">
-                                        No records found matching your search criteria.
-                                    </td>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                ARRIVAL<br />DATE
+                                            </div>
+                                            <SortIcon sortKey='arrivalDate' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                RESERVATION<br />DATE
+                                            </div>
+                                            <SortIcon sortKey='reservationDate' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-40">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                BOOKING<br />NUMBER
+                                            </div>
+                                            <SortIcon sortKey='bookingNumber' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div>STATUS</div>
+                                            <SortIcon sortKey='status' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div>NIGHTS</div>
+                                            <SortIcon sortKey='nights' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-32">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                GUEST<br />NAME
+                                            </div>
+                                            <SortIcon sortKey='guestName' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-28">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                SPECIAL<br />REQUESTS
+                                            </div>
+                                            <SortIcon sortKey='specialRequests' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-20">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div>TOTAL</div>
+                                            <SortIcon sortKey='total' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-24">
+                                        <div className="flex justify-center gap-1 items-center">
+                                            <div className="leading-tight">
+                                                RATE<br />PLAN
+                                            </div>
+                                            <SortIcon sortKey='ratePlan' />
+                                        </div>
+                                    </th>
+                                    <th className="bg-gray-50 px-3 py-3 text-left font-medium text-xs text-gray-800 uppercase tracking-wide border-b border-gray-200 w-16">
+                                        ACTION
+                                    </th>
                                 </tr>
-                            ) : (
-                                sortedBookings.map((booking) => (
-                                    <tr key={booking.id} className="hover:bg-gray-50">
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.arrivalDate.toLocaleDateString()}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.reservationDate.toLocaleDateString()}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.bookingNumber}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.status}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.nights}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.guestName}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.specialRequests}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.total}<br />{booking.currency}
-                                        </td>
-                                        <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
-                                            {booking.ratePlan}
-                                        </td>
-                                        <td className=" py-3 border-b border-gray-100 text-xs text-center">
-                                            <Button
-                                                variant="ghost"
-                                                size="icon"
-                                                className="h-5 w-5 bg-[white] hover:bg-gray-300  rounded-md transition-colors inline-flex items-center justify-center"
-                                                asChild
-                                            >
-                                                <Link href="/bookings/search/see">
-                                                    <Search size={16} />
-                                                </Link>
-                                            </Button>
+                            </thead>
+                            <tbody className='text-gray-700'>
+                                {filteredBookings.length === 0 ? (
+                                    <tr>
+                                        <td colSpan={10} className="px-3 py-8 text-center text-gray-500">
+                                            No records found matching your search criteria.
                                         </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : (
+                                    sortedBookings.map((booking) => (
+                                        <tr key={booking.id} className="hover:bg-gray-50">
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.arrivalDate.toLocaleDateString()}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.reservationDate.toLocaleDateString()}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.bookingNumber}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.status}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.nights}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.guestName}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.specialRequests}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.total}<br />{booking.currency}
+                                            </td>
+                                            <td className="px-2 py-3 border-b border-gray-100 text-xs align-middle text-center">
+                                                {booking.ratePlan}
+                                            </td>
+                                            <td className="py-3 border-b border-gray-100 text-xs text-center">
+                                                <Button
+                                                    variant="ghost"
+                                                    size="icon"
+                                                    className="h-5 w-5 bg-[white] hover:bg-gray-300 rounded-md transition-colors inline-flex items-center justify-center"
+                                                    asChild
+                                                >
+                                                    <Link href="/bookings/search/see">
+                                                        <Search size={16} />
+                                                    </Link>
+                                                </Button>
+                                            </td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}
-                 <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
+                <div className="px-3 sm:px-5 py-4 flex flex-col sm:flex-row justify-between items-center border-t border-gray-200 gap-3">
                     <div className="text-gray-600 text-sm order-2 sm:order-1">
                         Showing {filteredBookings.length > 0 ? 1 : 0} to {Math.min(10, filteredBookings.length)} of {filteredBookings.length} rows
                     </div>

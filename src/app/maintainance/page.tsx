@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 //import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import Link from 'next/link';
 import { MaintenanceData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 
 const Page: React.FC = () => {
@@ -11,6 +12,15 @@ const Page: React.FC = () => {
     const [, setCurrentPage] = useState(1);
 
     const [sortConfig, setSortConfig] = useState<SortConfig<MaintenanceData>>({ key: null, direction: 'asc' });
+    const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const maintenanceDatas: MaintenanceData[] = useMemo(() =>[
         {
@@ -155,7 +165,7 @@ const Page: React.FC = () => {
                         <div className="flex flex-col lg:flex-row gap-2 order-2 sm:order-1">
                             <Link href={"/maintainance/add-maintainance"}>
                                 <button className="w-full lg:w-auto px-4 sm:px-5 py-2 bg-[#076DB3] hover:bg-[#054f80] rounded-md text-white text-sm font-medium shadow-sm transition">
-                                    Add
+                                    ＋Add
                                 </button>
                             </Link>
                             <button className="px-4 sm:px-5 py-2 bg-gray-500 hover:bg-gray-700 rounded-md text-white text-sm font-normal cursor-pointer">
@@ -186,6 +196,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                     {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
@@ -315,6 +328,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}

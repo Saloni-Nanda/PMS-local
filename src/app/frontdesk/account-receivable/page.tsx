@@ -4,6 +4,7 @@ import React, { useMemo, useState } from 'react';
 import { Listbox, ListboxButton, ListboxOptions, ListboxOption } from "@headlessui/react";
 import CustomDatePicker from '@/components/ui/customDatePicker';
 import PaymentModal from './PaymentModal';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 interface AccountReceivableData {
   id: number;
@@ -33,6 +34,17 @@ const Page: React.FC = () => {
   const [selectedRecord, setSelectedRecord] = useState<AccountReceivableData | null>(null);
 
   const [sortConfig, setSortConfig] = useState<SortConfig>({ key: null, direction: 'asc' });
+
+   const [isLoading, setIsLoading] = useState(true);
+  
+      // Simulate loading data
+      React.useEffect(() => {
+          const timer = setTimeout(() => {
+              setIsLoading(false);
+          }, 1500);
+          return () => clearTimeout(timer);
+      }, []);
+  
 
   const accountsReceivables: AccountReceivableData[] = useMemo(() => [
     {
@@ -238,6 +250,9 @@ const Page: React.FC = () => {
 
         {/* Table Section - Always Visible with Horizontal Scroll */}
         <div className="overflow-x-auto">
+           {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
           <table className="w-full border-1 min-w-[900px]">
             <thead>
               <tr>
@@ -352,6 +367,7 @@ const Page: React.FC = () => {
               )}
             </tbody>
           </table>
+                    )}
         </div>
 
         {/* Payment Modal */}

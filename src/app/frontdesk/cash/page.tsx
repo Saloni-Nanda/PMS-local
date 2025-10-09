@@ -4,6 +4,7 @@ import { Search, ListFilterIcon } from 'lucide-react';
 import React, { useMemo, useState } from 'react';
 
 import { CashPaymentData, SortConfig } from '@/types';
+import TableSkeleton from '@/components/ui/TableSkeleton';
 
 const Page: React.FC = () => {
     const [fromDate, setFromDate] = useState(new Date("2022-08-20"));
@@ -11,6 +12,15 @@ const Page: React.FC = () => {
     const [, setCurrentPage] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [sortConfig, setSortConfig] = useState<SortConfig<CashPaymentData>>({ key: null, direction: 'asc' });
+     const [isLoading, setIsLoading] = useState(true);
+    
+        // Simulate loading data
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setIsLoading(false);
+            }, 1500);
+            return () => clearTimeout(timer);
+        }, []);
 
     const cashPayments: CashPaymentData[] = useMemo(() => [
         {
@@ -189,6 +199,9 @@ const Page: React.FC = () => {
 
                 {/* Table Section */}
                 <div className="overflow-x-auto">
+                     {isLoading ? (
+                        <TableSkeleton />
+                    ) : (
                     <table className="w-full border-1 min-w-[900px]">
                         <thead>
                             <tr>
@@ -290,6 +303,7 @@ const Page: React.FC = () => {
                             )}
                         </tbody>
                     </table>
+                    )}
                 </div>
 
                 {/* Pagination Section */}
